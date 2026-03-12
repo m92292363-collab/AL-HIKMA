@@ -1,0 +1,84 @@
+// netlify/functions/_db.js
+// Shared Netlify DB (Neon Postgres) helper
+// NETLIFY_DATABASE_URL is automatically injected by Netlify DB
+
+const { neon } = require('@netlify/neon');
+
+const sql = neon();
+
+async function initDB() {
+    // Students table
+    await sql`
+        CREATE TABLE IF NOT EXISTS students (
+            id SERIAL PRIMARY KEY,
+            student_id VARCHAR(50) UNIQUE NOT NULL,
+            name VARCHAR(200) NOT NULL,
+            email VARCHAR(200) UNIQUE NOT NULL,
+            password VARCHAR(255) NOT NULL,
+            faculty VARCHAR(200),
+            department VARCHAR(200),
+            year VARCHAR(10),
+            role VARCHAR(20) DEFAULT 'student',
+            created_at TIMESTAMP DEFAULT NOW(),
+            updated_at TIMESTAMP DEFAULT NOW()
+        )
+    `;
+
+    // Results table
+    await sql`
+        CREATE TABLE IF NOT EXISTS results (
+            id SERIAL PRIMARY KEY,
+            student_id VARCHAR(50) NOT NULL REFERENCES students(student_id) ON DELETE CASCADE,
+            subject VARCHAR(200) NOT NULL,
+            score NUMERIC(5,2),
+            grade VARCHAR(5),
+            semester VARCHAR(50),
+            academic_year VARCHAR(20),
+            created_at TIMESTAMP DEFAULT NOW(),
+            updated_at TIMESTAMP DEFAULT NOW()
+        )
+    `;
+
+    // Staff table — separate from students
+    // role: 'admin' = full access | 'staff' = faculty-scoped access
+    await sql`
+        CREATE TABLE IF NOT EXISTS staff (
+            id SERIAL PRIMARY KEY,
+            staff_id VARCHAR(50) UNIQUE NOT NULL,
+            name VARCHAR(200) NOT NULL,
+            email VARCHAR(200) UNIQUE NOT NULL,
+            password VARCHAR(255) NOT NULL,
+            faculty VARCHAR(200),        -- staff can only manage this faculty
+            role VARCHAR(20) DEFAULT 'staff',
+            created_at TIMESTAMP DEFAULT NOW(),
+            updated_at TIMESTAMP DEFAULT NOW()
+        )
+    `;
+
+    // Login attempt tracking (brute-force protection)
+    await sql`
+        CREATE TABLE IF NOT EXISTS login_attempts (
+            id SERIAL PRIMARY KEY,
+            identifier VARCHAR(200) NOT NULL,
+            attempts INTEGER DEFAULT 0,
+            locked_until TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT NOW()
+        )
+    `;
+}
+
+const CORS_HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Content-Type': 'application/json',
+};
+
+// Faculties list — used for validation
+const FACULTIES = [
+    'Faculty of Education',
+    'Faculty of Arts and Humanity',
+    'Faculty of Quran and Islamic Studies',
+    'Faculty of Shariaa and Law',
+];
+
+module.exports = { sql, initDB, CORS_HEADERS, FACULTIES };
