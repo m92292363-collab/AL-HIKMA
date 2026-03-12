@@ -1,0 +1,14 @@
+{
+  "name": "alhikma-university",
+  "version": "1.0.0",
+  "description": "Al Hikma University Student Portal",
+  "scripts": {
+    "seed": "node scripts/seed-admin.js"
+  },
+  "dependencies": {
+    "@netlify/neon": "^0.1.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.0",
+    "jsonwebtoken": "^9.0.0"
+  }
+}
