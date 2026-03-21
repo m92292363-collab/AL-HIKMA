@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GIU Admin Portal – Al-Hikma University</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito+Sans:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --g-dark:  #00793a;
+      --g-mid:   #00ab52;
+      --g-light: #c4f2d4;
+      --g-pale:  #f0faf4;
+      --white:   #ffffff;
+      --td:      #1a2e22;
+      --tm:      #3d5a48;
+      --tl:      #6b8f79;
+      --border:  #d4e8dc;
+      --danger:  #e53935;
+      --sidebar: 260px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito Sans', sans-serif; background: #f4f7f5; color: var(--td); min-height: 100vh; }
+
+    /* LOGIN */
+    #login-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(135deg, #004d25 0%, var(--g-dark) 60%, var(--g-mid) 100%);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    #login-screen.hidden { display: none; }
+    .login-box { background: var(--white); border-radius: 20px; width: 100%; max-width: 400px; box-shadow: 0 40px 80px rgba(0,0,0,.3); overflow: hidden; }
+    .lb-head { background: linear-gradient(135deg, var(--g-dark), var(--g-mid)); padding: 30px; text-align: center; position: relative; overflow: hidden; }
+    .lb-head::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.05'%3E%3Ccircle cx='20' cy='20' r='10'/%3E%3C/g%3E%3C/svg%3E"); }
+    .lb-icon { width: 60px; height: 60px; background: rgba(255,255,255,.18); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 14px; position: relative; }
+    .lb-head h2 { font-family: 'Amiri', serif; color: #fff; font-size: 1.4rem; position: relative; }
+    .lb-head p  { color: rgba(255,255,255,.75); font-size: .8rem; margin-top: 4px; position: relative; }
+    .lb-body { padding: 28px 28px 32px; }
+
+    .fg { margin-bottom: 16px; }
+    .fg label { display: block; font-size: .72rem; font-weight: 700; color: var(--tm); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .06em; }
+    .fg input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'Nunito Sans', sans-serif; font-size: .93rem; color: var(--td); background: var(--g-pale); outline: none; transition: border-color .2s, box-shadow .2s; }
+    .fg input:focus { border-color: var(--g-mid); box-shadow: 0 0 0 3px rgba(0,171,82,.12); background: #fff; }
+    .btn-primary { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--g-dark), var(--g-mid)); color: #fff; border: none; border-radius: 10px; font-family: 'Nunito Sans', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity .2s, transform .15s; }
+    .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .err-box { display: none; margin-top: 12px; background: #fff0f0; border: 1px solid #ffcccc; color: #cc0000; border-radius: 8px; padding: 9px 13px; font-size: .83rem; }
+    .err-box.show { display: block; }
+
+    /* APP LAYOUT */
+    #app { display: none; min-height: 100vh; }
+    #app.show { display: flex; }
+
+    .sidebar { width: var(--sidebar); background: var(--g-dark); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
+    .sb-logo { padding: 22px 18px 18px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .sb-logo h2 { font-family: 'Amiri', serif; color: #fff; font-size: 1.15rem; }
+    .sb-logo p  { color: rgba(255,255,255,.5); font-size: .7rem; margin-top: 2px; }
+    .sb-nav { flex: 1; padding: 14px 10px; overflow-y: auto; }
+    .sb-section { color: rgba(255,255,255,.35); font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; padding: 14px 8px 5px; }
+    .sb-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 9px; color: rgba(255,255,255,.7); font-size: .88rem; font-weight: 600; cursor: pointer; transition: all .18s; border: none; background: none; width: 100%; text-align: left; margin-bottom: 2px; }
+    .sb-item:hover  { background: rgba(255,255,255,.1); color: #fff; }
+    .sb-item.active { background: rgba(255,255,255,.18); color: #fff; }
+    .sb-item .ic { font-size: 1rem; width: 20px; text-align: center; }
+    .sb-foot { padding: 14px 10px; border-top: 1px solid rgba(255,255,255,.1); }
+    .admin-chip { background: rgba(255,255,255,.1); border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .admin-av   { width: 34px; height: 34px; border-radius: 50%; background: var(--g-mid); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: .85rem; flex-shrink: 0; }
+    .admin-info .nm { color: #fff; font-size: .85rem; font-weight: 700; }
+    .admin-info .rl { color: rgba(255,255,255,.45); font-size: .68rem; }
+    .btn-logout { width: 100%; padding: 9px; border-radius: 8px; background: rgba(229,57,53,.15); border: 1px solid rgba(229,57,53,.3); color: #ff8a80; font-family: 'Nunito Sans', sans-serif; font-size: .83rem; font-weight: 700; cursor: pointer; transition: background .2s; }
+    .btn-logout:hover { background: rgba(229,57,53,.28); }
+
+    .main { margin-left: var(--sidebar); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 15px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+    .topbar h3 { font-size: 1.05rem; font-weight: 900; }
+    .topbar p  { font-size: .78rem; color: var(--tl); margin-top: 1px; }
+    .content { padding: 26px 28px; flex: 1; }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--white); border-radius: 14px; padding: 20px 22px; border: 1.5px solid var(--border); position: relative; overflow: hidden; }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--g-dark), var(--g-mid)); }
+    .stat-card .sc-icon { font-size: 1.6rem; margin-bottom: 10px; }
+    .stat-card .sc-val  { font-size: 1.9rem; font-weight: 900; color: var(--td); font-family: 'Amiri', serif; }
+    .stat-card .sc-lbl  { font-size: .72rem; color: var(--tl); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; margin-top: 3px; }
+
+    .card { background: var(--white); border-radius: 14px; border: 1.5px solid var(--border); overflow: hidden; margin-bottom: 22px; }
+    .card-head { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .card-head h4 { font-size: .95rem; font-weight: 900; }
+
+    .form-card { background: var(--white); border-radius: 14px; border: 1.5px solid var(--border); padding: 26px; max-width: 640px; margin-bottom: 22px; }
+    .form-card h4 { font-size: .95rem; font-weight: 900; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: .72rem; font-weight: 700; color: var(--tm); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .05em; }
+    .form-group input,
+    .form-group select { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border); border-radius: 9px; font-family: 'Nunito Sans', sans-serif; font-size: .9rem; color: var(--td); background: var(--g-pale); outline: none; transition: border-color .2s; }
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--g-mid); background: #fff; }
+
+    .search-bar { padding: 8px 13px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Nunito Sans', sans-serif; font-size: .85rem; outline: none; transition: border-color .2s; width: 220px; }
+    .search-bar:focus { border-color: var(--g-mid); }
+
+    .tbl-wrap { overflow-x: auto; }
+    .data-tbl { width: 100%; border-collapse: collapse; font-size: .87rem; }
+    .data-tbl th { background: var(--g-pale); color: var(--tm); font-weight: 700; font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; padding: 10px 16px; text-align: left; border-bottom: 1.5px solid var(--border); }
+    .data-tbl td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .data-tbl tr:last-child td { border-bottom: none; }
+    .data-tbl tr:hover td { background: var(--g-pale); }
+    .empty-row td { text-align: center; padding: 40px; color: var(--tl); }
+
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: .73rem; font-weight: 700; }
+    .badge-green { background: #d4f5e3; color: #006b2d; }
+    .badge-blue  { background: #dceeff; color: #0055a5; }
+    .badge-red   { background: #ffe0e0; color: #b30000; }
+    .badge-gray  { background: #f0f0f0; color: #666; }
+
+    .btn { padding: 8px 18px; border-radius: 8px; font-family: 'Nunito Sans', sans-serif; font-size: .85rem; font-weight: 700; cursor: pointer; transition: all .18s; border: none; }
+    .btn-green   { background: var(--g-dark); color: #fff; }
+    .btn-green:hover { background: var(--g-mid); }
+    .btn-outline { background: #fff; color: var(--tm); border: 1.5px solid var(--border); }
+    .btn-outline:hover { border-color: var(--g-mid); color: var(--g-dark); }
+    .btn-danger  { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #c62828; }
+    .btn-sm { padding: 6px 14px; font-size: .78rem; }
+    .btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,30,15,.55); backdrop-filter: blur(3px); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+    .overlay.open { display: flex; }
+    .modal-box { background: #fff; border-radius: 18px; width: 100%; max-width: 420px; box-shadow: 0 32px 80px rgba(0,0,0,.25); animation: popIn .28s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes popIn { from{transform:scale(.88);opacity:0} to{transform:scale(1);opacity:1} }
+    .modal-box .mh { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .modal-box .mh h3 { font-size: 1rem; font-weight: 900; }
+    .modal-box .mb { padding: 20px 24px; color: var(--tm); line-height: 1.6; font-size: .9rem; }
+    .modal-box .mf { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+    .x-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--tl); padding: 4px 8px; border-radius: 6px; }
+    .x-btn:hover { background: var(--g-pale); }
+
+    #toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; background: var(--g-dark); color: #fff; padding: 13px 20px; border-radius: 12px; font-weight: 700; font-size: .88rem; box-shadow: 0 8px 24px rgba(0,0,0,.2); transform: translateY(80px); opacity: 0; transition: all .3s; max-width: 320px; }
+    #toast.show  { transform: translateY(0); opacity: 1; }
+    #toast.error { background: var(--danger); }
+
+    .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: sp .6s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes sp { to{transform:rotate(360deg)} }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .main    { margin-left: 0; }
+      .form-row { grid-template-columns: 1fr; }
+      .content  { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="lb-head">
+      <div class="lb-icon">🛡️</div>
+      <h2>Admin Portal</h2>
+      <p>Al-Hikma University · GIU · Restricted Access</p>
+    </div>
+    <div class="lb-body">
+      <div class="fg">
+        <label>Username</label>
+        <input type="text" id="l-user" placeholder="admin" autocomplete="username"/>
+      </div>
+      <div class="fg">
+        <label>Password</label>
+        <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+      <button class="btn-primary" id="l-btn" onclick="doAdminLogin()">Sign In</button>
+      <div class="err-box" id="l-err"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="sidebar">
+    <div class="sb-logo">
+      <h2>GIU Admin</h2>
+      <p>Al-Hikma University</p>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Overview</div>
+      <button class="sb-item active" onclick="goPage('dashboard',this)"><span class="ic">📊</span>Dashboard</button>
+      <div class="sb-section">Students</div>
+      <button class="sb-item" onclick="goPage('students',this)"><span class="ic">🎓</span>All Students</button>
+      <button class="sb-item" onclick="goPage('add-student',this)"><span class="ic">➕</span>Add Student</button>
+      <div class="sb-section">Results</div>
+      <button class="sb-item" onclick="goPage('results',this)"><span class="ic">📝</span>All Results</button>
+      <button class="sb-item" onclick="goPage('add-result',this)"><span class="ic">✏️</span>Add Result</button>
+      <div class="sb-section">Tools</div>
+      <button class="sb-item" onclick="goPage('reset-pw',this)"><span class="ic">🔑</span>Reset Password</button>
+    </nav>
+    <div class="sb-foot">
+      <div class="admin-chip">
+        <div class="admin-av" id="admin-av">A</div>
+        <div class="admin-info">
+          <div class="nm" id="admin-nm">Admin</div>
+          <div class="rl">Super Administrator</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">⬅ Sign Out</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h3 id="page-title">Dashboard</h3>
+        <p  id="page-sub">Overview of Al-Hikma University</p>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="sc-icon">🎓</div><div class="sc-val" id="d-students">—</div><div class="sc-lbl">Total Students</div></div>
+          <div class="stat-card"><div class="sc-icon">📝</div><div class="sc-val" id="d-results">—</div><div class="sc-lbl">Total Results</div></div>
+          <div class="stat-card"><div class="sc-icon">🏛️</div><div class="sc-val">4</div><div class="sc-lbl">Faculties</div></div>
+          <div class="stat-card"><div class="sc-icon">📚</div><div class="sc-val">8</div><div class="sc-lbl">Departments</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h4>Recently Added Students</h4></div>
+          <div class="tbl-wrap">
+            <table class="data-tbl">
+              <thead><tr><th>Student ID</th><th>Name</th><th>Email</th><th>Faculty</th><th>Year</th></tr></thead>
+              <tbody id="d-recent"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--tl)">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALL STUDENTS -->
+      <div class="page" id="page-students">
+        <div class="card">
+          <div class="card-head">
+            <h4>All Students</h4>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <input class="search-bar" id="s-search" placeholder="Search name, ID or email…" oninput="filterStudents()"/>
+              <select class="search-bar" id="s-fac" style="width:auto" onchange="filterStudents()">
+                <option value="">All Faculties</option>
+                <option>Faculty of Education</option>
+                <option>Faculty of Arts and Humanity</option>
+                <option>Faculty of Quran and Islamic Studies</option>
+                <option>Faculty of Sharia and Law</option>
+              </select>
+            </div>
+          </div>
+          <div class="tbl-wrap">
+            <table class="data-tbl">
+              <thead><tr><th>Student ID</th><th>Full Name</th><th>Email</th><th>Faculty</th><th>Department</th><th>Year</th><th>Action</th></tr></thead>
+              <tbody id="s-body"><tr class="empty-row"><td colspan="7">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD STUDENT -->
+      <div class="page" id="page-add-student">
+        <div class="form-card">
+          <h4>➕ Add New Student</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Student ID</label>
+              <input type="text" id="ns-id" placeholder="GIU-2024-001"/>
+            </div>
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="ns-name" placeholder="Full name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="ns-email" placeholder="student@gmail.com"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Faculty</label>
+              <select id="ns-fac" onchange="loadDepts('ns-fac','ns-dept')">
+                <option value="">Select Faculty</option>
+                <option>Faculty of Education</option>
+                <option>Faculty of Arts and Humanity</option>
+                <option>Faculty of Quran and Islamic Studies</option>
+                <option>Faculty of Sharia and Law</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Department</label>
+              <select id="ns-dept"><option value="">Select Department</option></select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Year</label>
+              <select id="ns-year">
+                <option value="">Select Year</option>
+                <option value="1">Year 1</option>
+                <option value="2">Year 2</option>
+                <option value="3">Year 3</option>
+                <option value="4">Year 4</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="ns-pw" placeholder="Set login password"/>
+            </div>
+          </div>
+          <button class="btn btn-green" id="ns-btn" onclick="addStudent()">Add Student</button>
+        </div>
+      </div>
+
+      <!-- ALL RESULTS -->
+      <div class="page" id="page-results">
+        <div class="card">
+          <div class="card-head">
+            <h4>All Results</h4>
+            <input class="search-bar" id="r-search" placeholder="Search by student ID…" oninput="filterResults()"/>
+          </div>
+          <div class="tbl-wrap">
+            <table class="data-tbl">
+              <thead><tr><th>Student ID</th><th>Subject</th><th>Year</th><th>Semester</th><th>Marks</th><th>Grade</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="r-body"><tr class="empty-row"><td colspan="8">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD RESULT -->
+      <div class="page" id="page-add-result">
+        <div class="form-card">
+          <h4>✏️ Add / Update Result</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Student ID</label>
+              <input type="text" id="nr-sid" placeholder="GIU-2024-001"/>
+            </div>
+            <div class="form-group">
+              <label>Subject Name</label>
+              <input type="text" id="nr-subject" placeholder="e.g. Fiqh I"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Year</label>
+              <select id="nr-year">
+                <option value="1">Year 1</option>
+                <option value="2">Year 2</option>
+                <option value="3">Year 3</option>
+                <option value="4">Year 4</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Semester</label>
+              <select id="nr-sem">
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Marks (0–100)</label>
+              <input type="number" id="nr-marks" placeholder="e.g. 85" min="0" max="100"/>
+            </div>
+            <div class="form-group">
+              <label>Credit Hours</label>
+              <input type="number" id="nr-credits" value="3" min="1" max="6"/>
+            </div>
+          </div>
+          <button class="btn btn-green" id="nr-btn" onclick="addResult()">Save Result</button>
+        </div>
+      </div>
+
+      <!-- RESET PASSWORD -->
+      <div class="page" id="page-reset-pw">
+        <div class="form-card" style="max-width:460px">
+          <h4>🔑 Reset Student Password</h4>
+          <div class="form-group">
+            <label>Student ID</label>
+            <input type="text" id="rp-sid" placeholder="GIU-2024-001"/>
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="rp-pw" placeholder="New password"/>
+          </div>
+          <button class="btn btn-green" id="rp-btn" onclick="resetPassword()">Reset Password</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="overlay" id="confirm-overlay">
+  <div class="modal-box">
+    <div class="mh">
+      <h3>Confirm Delete</h3>
+      <button class="x-btn" onclick="closeConfirm()">✕</button>
+    </div>
+    <div class="mb" id="confirm-msg"></div>
+    <div class="mf">
+      <button class="btn btn-outline btn-sm" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger btn-sm" id="confirm-ok">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const DEPTS = {
+    'Faculty of Education':                ['Department of Islamic Studies','Department of Curriculum and Teaching Methodology'],
+    'Faculty of Arts and Humanity':        ['Department of Arabic Language','Department of Media and Journalism'],
+    'Faculty of Quran and Islamic Studies':['Department of Tafsir','Department of Qiraat'],
+    'Faculty of Sharia and Law':           ['Department of Sharia','Department of Law'],
+  };
+
+  const PAGE_META = {
+    'dashboard':   { title:'Dashboard',       sub:'Overview of Al-Hikma University' },
+    'students':    { title:'All Students',     sub:'Manage enrolled students' },
+    'add-student': { title:'Add Student',      sub:'Enrol a new student' },
+    'results':     { title:'All Results',      sub:'View and manage academic results' },
+    'add-result':  { title:'Add Result',       sub:'Post or update a student result' },
+    'reset-pw':    { title:'Reset Password',   sub:'Change a student login password' },
+  };
+
+  let _token = null, _students = [], _results = [], _pendingDel = null;
+
+  async function doAdminLogin() {
+    const username = document.getElementById('l-user').value.trim();
+    const password = document.getElementById('l-pass').value;
+    const errEl    = document.getElementById('l-err');
+    const btn      = document.getElementById('l-btn');
+    errEl.classList.remove('show');
+    if (!username || !password) { errEl.textContent = 'Enter username and password.'; errEl.classList.add('show'); return; }
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span>Signing in…';
+    try {
+      const res  = await fetch('/.netlify/functions/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) { errEl.textContent = data.message || 'Invalid credentials.'; errEl.classList.add('show'); return; }
+      _token = data.token;
+      document.getElementById('admin-nm').textContent = data.admin?.username || 'Admin';
+      document.getElementById('admin-av').textContent = (data.admin?.username || 'A')[0].toUpperCase();
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('app').classList.add('show');
+      loadDashboard();
+    } catch (e) { errEl.textContent = 'Connection error. Please try again.'; errEl.classList.add('show'); }
+    finally { btn.disabled = false; btn.textContent = 'Sign In'; }
+  }
+
+  function doLogout() {
+    _token = null; _students = []; _results = [];
+    document.getElementById('app').classList.remove('show');
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('l-user').value = '';
+    document.getElementById('l-pass').value = '';
+    document.getElementById('l-err').classList.remove('show');
+  }
+
+  function goPage(id, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    if (el) el.classList.add('active');
+    const m = PAGE_META[id] || {};
+    document.getElementById('page-title').textContent = m.title || id;
+    document.getElementById('page-sub').textContent   = m.sub   || '';
+    if (id === 'dashboard') loadDashboard();
+    if (id === 'students')  loadStudents();
+    if (id === 'results')   loadResults();
+  }
+
+  async function api(fn, method = 'GET', body = null) {
+    const opts = { method, headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _token } };
+    if (body) opts.body = JSON.stringify(body);
+    const res  = await fetch('/.netlify/functions/' + fn, opts);
+    const data = await res.json();
+    return { ok: res.ok, data };
+  }
+
+  async function loadDashboard() {
+    try {
+      const [sr, rr] = await Promise.all([api('get-all-students'), api('get-all-results')]);
+      _students = sr.data.students || [];
+      _results  = rr.data.results  || [];
+      document.getElementById('d-students').textContent = _students.length;
+      document.getElementById('d-results').textContent  = _results.length;
+      const recent = _students.slice(0, 6);
+      document.getElementById('d-recent').innerHTML = recent.length
+        ? recent.map(s => `<tr>
+            <td><code style="background:var(--g-pale);padding:2px 8px;border-radius:5px;font-size:.8rem">${s.student_id}</code></td>
+            <td style="font-weight:700">${s.full_name}</td>
+            <td style="color:var(--tl)">${s.email}</td>
+            <td>${s.faculty}</td>
+            <td><span class="badge badge-green">Year ${s.year}</span></td>
+          </tr>`).join('')
+        : '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--tl)">No students enrolled yet.</td></tr>';
+    } catch (e) { toast('Failed to load dashboard.', true); }
+  }
+
+  async function loadStudents() {
+    document.getElementById('s-body').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--tl)">Loading…</td></tr>';
+    try {
+      const { data } = await api('get-all-students');
+      _students = data.students || [];
+      renderStudents(_students);
+    } catch (e) { toast('Failed to load students.', true); }
+  }
+
+  function renderStudents(list) {
+    const tb = document.getElementById('s-body');
+    if (!list.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="7">No students found.</td></tr>'; return; }
+    tb.innerHTML = list.map(s => `<tr>
+      <td><code style="background:var(--g-pale);padding:2px 8px;border-radius:5px;font-size:.8rem">${s.student_id}</code></td>
+      <td style="font-weight:700">${s.full_name}</td>
+      <td style="color:var(--tl)">${s.email}</td>
+      <td>${s.faculty}</td>
+      <td>${s.department}</td>
+      <td><span class="badge badge-green">Year ${s.year}</span></td>
+      <td><button class="btn btn-danger btn-sm" onclick="confirmDel('student','${s.student_id}','${s.full_name}')">Delete</button></td>
+    </tr>`).join('');
+  }
+
+  function filterStudents() {
+    const q = document.getElementById('s-search').value.toLowerCase();
+    const f = document.getElementById('s-fac').value;
+    renderStudents(_students.filter(s =>
+      (!q || s.full_name.toLowerCase().includes(q) || s.student_id.toLowerCase().includes(q) || s.email.toLowerCase().includes(q)) &&
+      (!f || s.faculty === f)
+    ));
+  }
+
+  async function addStudent() {
+    const id    = document.getElementById('ns-id').value.trim();
+    const name  = document.getElementById('ns-name').value.trim();
+    const email = document.getElementById('ns-email').value.trim();
+    const fac   = document.getElementById('ns-fac').value;
+    const dept  = document.getElementById('ns-dept').value;
+    const year  = document.getElementById('ns-year').value;
+    const pw    = document.getElementById('ns-pw').value;
+    if (!id || !name || !email || !fac || !dept || !year || !pw) { toast('Please fill in all fields.', true); return; }
+    const btn = document.getElementById('ns-btn');
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Adding…';
+    try {
+      const { ok, data } = await api('add-student', 'POST', { student_id: id, email, full_name: name, faculty: fac, department: dept, year: parseInt(year), password: pw });
+      if (ok && data.success) {
+        toast('Student added successfully!');
+        ['ns-id','ns-name','ns-email','ns-pw'].forEach(i => document.getElementById(i).value = '');
+        document.getElementById('ns-fac').value = '';
+        document.getElementById('ns-dept').innerHTML = '<option value="">Select Department</option>';
+        document.getElementById('ns-year').value = '';
+      } else { toast(data.message || 'Failed to add student.', true); }
+    } catch (e) { toast('Error adding student.', true); }
+    finally { btn.disabled = false; btn.textContent = 'Add Student'; }
+  }
+
+  async function loadResults() {
+    document.getElementById('r-body').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--tl)">Loading…</td></tr>';
+    try {
+      const { data } = await api('get-all-results');
+      _results = data.results || [];
+      renderResults(_results);
+    } catch (e) { toast('Failed to load results.', true); }
+  }
+
+  function renderResults(list) {
+    const tb = document.getElementById('r-body');
+    if (!list.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="8">No results found.</td></tr>'; return; }
+    tb.innerHTML = list.map(r => {
+      const gc   = r.grade?.[0] === 'A' ? 'badge-green' : r.grade?.[0] === 'B' ? 'badge-blue' : r.grade?.[0] === 'F' ? 'badge-red' : 'badge-gray';
+      const pass = Number(r.marks) >= 50;
+      return `<tr>
+        <td><code style="background:var(--g-pale);padding:2px 8px;border-radius:5px;font-size:.8rem">${r.student_id}</code></td>
+        <td style="font-weight:700">${r.subject_name}</td>
+        <td>Year ${r.year}</td>
+        <td>Sem ${r.semester}</td>
+        <td><strong>${r.marks}</strong>/100</td>
+        <td><span class="badge ${gc}">${r.grade}</span></td>
+        <td style="font-weight:700;color:${pass?'#006b2d':'#b30000'}">${pass?'✓ Pass':'✗ Fail'}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="confirmDel('result',${r.id},'${r.subject_name} — ${r.student_id}')">Delete</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function filterResults() {
+    const q = document.getElementById('r-search').value.toLowerCase();
+    renderResults(_results.filter(r => !q || r.student_id.toLowerCase().includes(q)));
+  }
+
+  async function addResult() {
+    const sid     = document.getElementById('nr-sid').value.trim();
+    const subject = document.getElementById('nr-subject').value.trim();
+    const year    = document.getElementById('nr-year').value;
+    const sem     = document.getElementById('nr-sem').value;
+    const marks   = parseInt(document.getElementById('nr-marks').value);
+    const credits = parseInt(document.getElementById('nr-credits').value);
+    if (!sid || !subject || !year || !sem || isNaN(marks) || isNaN(credits)) { toast('Please fill in all fields.', true); return; }
+    if (marks < 0 || marks > 100) { toast('Marks must be between 0 and 100.', true); return; }
+    const btn = document.getElementById('nr-btn');
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving…';
+    try {
+      const { ok, data } = await api('add-marks', 'POST', { student_id: sid, subject_name: subject, year: parseInt(year), semester: parseInt(sem), marks, credit_hours: credits });
+      if (ok && data.success) {
+        toast('Result saved! Grade: ' + data.grade);
+        ['nr-sid','nr-subject','nr-marks'].forEach(i => document.getElementById(i).value = '');
+        document.getElementById('nr-credits').value = '3';
+      } else { toast(data.message || 'Failed to save result.', true); }
+    } catch (e) { toast('Error saving result.', true); }
+    finally { btn.disabled = false; btn.textContent = 'Save Result'; }
+  }
+
+  async function resetPassword() {
+    const sid = document.getElementById('rp-sid').value.trim();
+    const pw  = document.getElementById('rp-pw').value;
+    if (!sid || !pw) { toast('Please fill in all fields.', true); return; }
+    const btn = document.getElementById('rp-btn');
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Resetting…';
+    try {
+      const { ok, data } = await api('reset-password', 'POST', { student_id: sid, new_password: pw });
+      if (ok && data.success) {
+        toast('Password reset successfully!');
+        document.getElementById('rp-sid').value = '';
+        document.getElementById('rp-pw').value  = '';
+      } else { toast(data.message || 'Failed to reset password.', true); }
+    } catch (e) { toast('Error resetting password.', true); }
+    finally { btn.disabled = false; btn.textContent = 'Reset Password'; }
+  }
+
+  function confirmDel(type, id, label) {
+    _pendingDel = { type, id };
+    document.getElementById('confirm-msg').textContent = 'Are you sure you want to delete "' + label + '"? This cannot be undone.';
+    document.getElementById('confirm-overlay').classList.add('open');
+    document.getElementById('confirm-ok').onclick = executeDel;
+  }
+
+  function closeConfirm() {
+    document.getElementById('confirm-overlay').classList.remove('open');
+    _pendingDel = null;
+  }
+
+  async function executeDel() {
+    closeConfirm();
+    if (!_pendingDel) return;
+    const { type, id } = _pendingDel;
+    try {
+      const res = type === 'student'
+        ? await api('delete-student', 'DELETE', { student_id: id })
+        : await api('delete-results',  'DELETE', { id });
+      if (res.ok && res.data.success) {
+        toast('Deleted successfully.');
+        if (type === 'student') loadStudents(); else loadResults();
+      } else { toast(res.data.message || 'Delete failed.', true); }
+    } catch (e) { toast('Error deleting.', true); }
+  }
+
+  function loadDepts(facId, deptId) {
+    const depts = DEPTS[document.getElementById(facId).value] || [];
+    document.getElementById(deptId).innerHTML =
+      '<option value="">Select Department</option>' +
+      depts.map(d => '<option>' + d + '</option>').join('');
+  }
+
+  function toast(msg, isErr = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show' + (isErr ? ' error' : '');
+    setTimeout(() => { t.className = ''; }, 3500);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !document.getElementById('login-screen').classList.contains('hidden')) doAdminLogin();
+  });
+</script>
+</body>
+</html>
