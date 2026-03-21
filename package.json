@@ -1,0 +1,11 @@
+{
+  "name": "giu-alhikma-portal",
+  "version": "1.0.0",
+  "description": "Al-Hikma University Student Results Portal – GIU",
+  "type": "module",
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
