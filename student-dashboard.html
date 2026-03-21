@@ -1,135 +1,569 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Al Hikma University - Student Dashboard</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Al-Hikma University – Student Results Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito+Sans:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; }
-    nav {
-      background: #1a3a5c;
-      padding: 15px 30px;
+    :root {
+      --g-dark:  #00793a;
+      --g-mid:   #00ab52;
+      --g-light: #c4f2d4;
+      --g-pale:  #f0faf4;
+      --white:   #ffffff;
+      --td:      #1a2e22;
+      --tm:      #3d5a48;
+      --tl:      #6b8f79;
+      --border:  #d4e8dc;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+      background: var(--g-pale);
+      color: var(--td);
+      min-height: 100vh;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
     }
-    nav h1 { color: #c9a84c; font-size: 1.2rem; }
-    .user-info { color: #dde6f0; font-size: 0.9rem; }
-    .btn-logout {
-      background: rgba(255,255,255,0.1);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 7px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.85rem;
+
+    /* ── TOP BAR ── */
+    .topbar {
+      background: var(--g-dark);
+      flex-shrink: 0;
     }
-    .btn-logout:hover { background: #c9a84c; color: #1a3a5c; }
-    .content { padding: 30px; max-width: 900px; margin: 0 auto; }
-    .welcome-card {
-      background: #1a3a5c;
-      color: white;
-      padding: 30px;
-      border-radius: 12px;
-      margin-bottom: 25px;
+    .topbar-inner {
+      max-width: 1100px; width: 100%;
+      margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 32px;
     }
-    .welcome-card h2 { color: #c9a84c; font-size: 1.5rem; margin-bottom: 5px; }
-    .welcome-card p { color: #aab8c8; }
-    .results-card {
-      background: white;
-      border-radius: 12px;
-      padding: 25px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    .topbar-brand { display: flex; align-items: center; gap: 12px; }
+    .giu-logo { height: 44px; width: auto; display: block; object-fit: contain; }
+    .topbar-brand .emblem {
+      width: 42px; height: 42px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
     }
-    .results-card h3 { color: #1a3a5c; margin-bottom: 20px; font-size: 1.1rem; }
-    table { width: 100%; border-collapse: collapse; }
-    th { background: #1a3a5c; color: white; padding: 12px; text-align: left; font-size: 0.9rem; }
-    td { padding: 12px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; }
-    tr:hover td { background: #f8f5ef; }
-    .grade-badge {
-      display: inline-block;
-      padding: 3px 12px;
+    .topbar-brand h1 { font-family: 'Amiri', serif; color: #fff; font-size: 1.1rem; line-height: 1.2; }
+    .topbar-brand p  { color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-top: 1px; }
+    .topbar-right    { color: rgba(255,255,255,0.55); font-size: 0.75rem; text-align: right; }
+    .topbar-right strong { color: rgba(255,255,255,0.85); display: block; }
+
+    /* ── MAIN ── */
+    main {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px 16px;
+    }
+
+    /* ══════════════════════
+       LOGIN CARD
+    ══════════════════════ */
+    #screen-login { width: 100%; max-width: 420px; }
+
+    .login-card {
+      background: var(--white);
       border-radius: 20px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      background: #d1fae5;
-      color: #065f46;
+      box-shadow: 0 20px 60px rgba(0,121,58,0.15);
+      overflow: hidden;
     }
-    .no-results { text-align: center; color: #999; padding: 40px; }
-    .loading { text-align: center; color: #999; padding: 30px; }
+    .lc-head {
+      background: linear-gradient(135deg, var(--g-dark) 0%, var(--g-mid) 100%);
+      padding: 34px 30px 28px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .lc-head::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='20' cy='20' r='10'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .lc-icon {
+      width: 66px; height: 66px;
+      background: rgba(255,255,255,0.18); border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.1rem; margin: 0 auto 14px; position: relative;
+    }
+    .lc-head h2 { font-family:'Amiri',serif; color:#fff; font-size:1.55rem; position:relative; }
+    .lc-head p  { color:rgba(255,255,255,0.78); font-size:0.82rem; margin-top:5px; position:relative; }
+
+    .lc-body { padding: 28px 30px 30px; }
+
+    .fg { margin-bottom: 16px; }
+    .fg label {
+      display: block; font-size: 0.72rem; font-weight: 700;
+      color: var(--tm); margin-bottom: 6px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .fg input {
+      width: 100%; padding: 12px 15px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: 'Nunito Sans', sans-serif; font-size: 0.93rem;
+      color: var(--td); background: var(--g-pale); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .fg input:focus {
+      border-color: var(--g-mid);
+      box-shadow: 0 0 0 3px rgba(0,171,82,0.12);
+      background: #fff;
+    }
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 44px; }
+    .pw-eye {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: var(--tl);
+      font-size: 0.95rem; padding: 4px; line-height: 1;
+    }
+
+    .btn-submit {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--g-dark), var(--g-mid));
+      color: #fff; border: none; border-radius: 10px;
+      font-family: 'Nunito Sans', sans-serif; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .err-box {
+      display: none; margin-top: 14px;
+      background: #fff0f0; border: 1px solid #ffcccc;
+      color: #cc0000; border-radius: 9px;
+      padding: 10px 14px; font-size: 0.83rem;
+      align-items: center; gap: 8px;
+    }
+    .err-box.show { display: flex; }
+
+    .lc-foot {
+      padding: 13px 30px 16px; border-top: 1px solid var(--border);
+      text-align: center; font-size: 0.76rem; color: var(--tl);
+    }
+    .lc-foot a { color: var(--g-dark); text-decoration: none; font-weight: 700; }
+
+    /* ══════════════════════
+       RESULTS SCREEN
+    ══════════════════════ */
+    #screen-results {
+      display: none; width: 100%; max-width: 980px;
+    }
+
+    .res-topbar {
+      background: linear-gradient(135deg, var(--g-dark), var(--g-mid));
+      border-radius: 16px; padding: 22px 26px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap; margin-bottom: 18px;
+    }
+    .res-topbar h2 { font-family:'Amiri',serif; color:#fff; font-size:1.3rem; margin-bottom:3px; }
+    .res-topbar p  { color:rgba(255,255,255,0.75); font-size:0.8rem; }
+    .btn-logout {
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+      color: #fff; padding: 8px 18px; border-radius: 8px;
+      font-family: 'Nunito Sans', sans-serif; font-size: 0.82rem; font-weight: 700;
+      cursor: pointer; transition: background 0.2s; white-space: nowrap;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+    /* Info strip */
+    .info-strip {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 16px 22px;
+      display: flex; gap: 28px; flex-wrap: wrap; margin-bottom: 18px;
+    }
+    .ii .lbl { font-size:0.67rem; font-weight:700; color:var(--tl); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:4px; }
+    .ii .val { font-size:0.9rem; font-weight:700; color:var(--td); }
+
+    /* Year tabs */
+    .yr-tabs { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+    .yr-tab {
+      padding: 7px 20px; border-radius: 100px;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-family: 'Nunito Sans', sans-serif; font-size: 0.82rem; font-weight: 700;
+      color: var(--tm); cursor: pointer; transition: all 0.18s;
+    }
+    .yr-tab.active { background: var(--g-dark); border-color: var(--g-dark); color: #fff; }
+    .yr-tab:hover:not(.active) { border-color: var(--g-mid); color: var(--g-dark); }
+
+    /* Semester cards */
+    .sems { display: flex; flex-direction: column; gap: 16px; }
+    .sem-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .sem-head {
+      background: var(--g-pale); padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .sem-head h4 { font-size: 0.88rem; font-weight: 900; color: var(--td); }
+    .sem-badge { background: var(--g-light); color: var(--g-dark); font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 100px; }
+
+    .tbl-wrap { overflow-x: auto; }
+    .res-tbl { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+    .res-tbl th {
+      background: var(--g-pale); color: var(--tm); font-weight: 700;
+      font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.07em;
+      padding: 10px 16px; text-align: left; border-bottom: 1.5px solid var(--border);
+    }
+    .res-tbl td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .res-tbl tr:last-child td { border-bottom: none; }
+    .res-tbl tr:hover td { background: var(--g-pale); }
+
+    .gp { display:inline-block; padding:2px 11px; border-radius:100px; font-size:0.75rem; font-weight:700; }
+    .ga { background:#d4f5e3; color:#006b2d; }
+    .gb { background:#dceeff; color:#0055a5; }
+    .gc { background:#fff6d4; color:#856200; }
+    .gd { background:#ffe8cc; color:#7a3e00; }
+    .gf { background:#ffe0e0; color:#b30000; }
+
+    .sem-foot {
+      padding: 13px 20px;
+      background: linear-gradient(90deg, var(--g-dark), var(--g-mid));
+      display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+    }
+    .sf .sf-l { color:rgba(255,255,255,0.7); font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; }
+    .sf .sf-v { color:#fff; font-size:1rem; font-weight:900; }
+    .sf-status {
+      margin-left: auto; background: rgba(255,255,255,0.2);
+      border-radius: 100px; padding: 5px 15px;
+      color: #fff; font-weight: 700; font-size: 0.78rem;
+    }
+
+    /* Empty */
+    .empty-state { text-align:center; padding:48px 20px; color:var(--tl); background:var(--white); border-radius:14px; border:1.5px solid var(--border); }
+    .empty-state .ei { font-size:2.4rem; margin-bottom:10px; }
+    .empty-state p { font-weight:700; font-size:0.95rem; color:var(--tm); }
+    .empty-state small { font-size:0.79rem; margin-top:5px; display:block; }
+
+    /* Footer */
+    footer { flex-shrink:0; text-align:center; padding:16px; font-size:0.75rem; color:var(--tl); border-top:1px solid var(--border); background:var(--white); }
+    footer strong { color: var(--g-dark); }
+
+    @keyframes sp { to { transform: rotate(360deg); } }
+
+    @media (max-width: 600px) {
+      .topbar-inner { padding: 12px 16px; }
+      .lc-body { padding: 20px 18px 24px; }
+      .res-topbar { padding: 16px 16px; border-radius: 12px; }
+      .info-strip { gap: 14px; padding: 14px 16px; }
+      .sem-foot { gap: 16px; }
+    }
   </style>
 </head>
 <body>
-<nav>
-  <h1>🎓 Al Hikma University — Student Portal</h1>
-  <div style="display:flex;align-items:center;gap:15px;">
-    <span class="user-info" id="userInfo"></span>
-    <button class="btn-logout" onclick="logout()">Logout</button>
-  </div>
-</nav>
 
-<div class="content">
-  <div class="welcome-card">
-    <h2 id="welcomeName">Welcome!</h2>
-    <p id="welcomeDetails">Loading your profile...</p>
-  </div>
-  <div class="results-card">
-    <h3>📋 Your Academic Results</h3>
-    <table>
-      <thead>
-        <tr><th>Subject</th><th>Grade</th><th>Semester</th><th>Faculty</th></tr>
-      </thead>
-      <tbody id="resultsBody">
-        <tr><td colspan="4" class="loading">Loading results...</td></tr>
-      </tbody>
-    </table>
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-brand">
+      <!-- ✅ YOUR LOGO: replace src with your image path e.g. src="./logo.png" or your GitHub raw URL -->
+      <img src="" alt="GIU Logo" class="giu-logo" onerror="this.style.display='none'"/>
+      <div>
+        <h1>Al-Hikma University</h1>
+        <p>Gambia Islamic Union (GIU)</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <strong>Student Results Portal</strong>
+      Academic Records System
+    </div>
   </div>
 </div>
+<main>
+
+  <!-- LOGIN -->
+  <div id="screen-login">
+    <div class="login-card">
+      <div class="lc-head">
+        <div class="lc-icon"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h2>Student Portal</h2>
+        <p>Sign in to view your academic results</p>
+      </div>
+      <div class="lc-body">
+        <div class="fg">
+          <label>Email Address</label>
+          <input type="email" id="inp-id" placeholder="e.g. example@gmail.com" autocomplete="email"/>
+        </div>
+        <div class="fg">
+          <label>Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="inp-pw" placeholder="••••••••" autocomplete="current-password"/>
+            <button class="pw-eye" onclick="togglePw(this)" title="Show password"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <button class="btn-submit" id="login-btn" onclick="doLogin()">Sign In</button>
+        <div class="err-box" id="err-box"><span>⚠</span><span id="err-msg"></span></div>
+      </div>
+      <div class="lc-foot">
+        Forgot your password? Contact the <a href="mailto:info@giu.gm">GIU Registrar</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="screen-results">
+    <div class="res-topbar">
+      <div>
+        <h2 id="res-name"></h2>
+        <p id="res-sub"></p>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">⬅ Sign Out</button>
+    </div>
+
+    <div class="info-strip" id="info-strip"></div>
+    <div class="yr-tabs"     id="yr-tabs"></div>
+    <div class="sems"        id="sems"></div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Gambia Islamic Union (GIU)</strong> &nbsp;|&nbsp;
+  Al-Hikma University &nbsp;|&nbsp; Tallinding Kunjang, The Gambia
+</footer>
 
 <script>
-const token = localStorage.getItem('token');
-if (!token) window.location.href = 'login.html';
+  /* ═══════════════════════════════════════════
+     GIU Student Portal – Frontend Logic
+     Fetches from /.netlify/functions/student-login
+     Renders data returned from Neon database
+  ═══════════════════════════════════════════ */
 
-async function loadResults() {
-  try {
-    const res = await fetch('/.netlify/functions/results', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await res.json();
-    if (!res.ok) { logout(); return; }
+  var _student = null, _results = [];
 
-    document.getElementById('welcomeName').textContent = `Welcome, ${data.student.name}`;
-    document.getElementById('welcomeDetails').textContent =
-      `Student ID: ${data.student.student_id} | Faculty: ${data.student.faculty}`;
-    document.getElementById('userInfo').textContent = data.student.name;
+  /* ── Eye icons ── */
+  var eyeOpen = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  var eyeOff  = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
 
-    const tbody = document.getElementById('resultsBody');
-    if (data.results && data.results.length) {
-      tbody.innerHTML = data.results.map(r => `
-        <tr>
-          <td>${r.subject}</td>
-          <td><span class="grade-badge">${r.grade}</span></td>
-          <td>${r.semester}</td>
-          <td>${r.faculty}</td>
-        </tr>
-      `).join('');
-    } else {
-      tbody.innerHTML = '<tr><td colspan="4" class="no-results">No results posted yet. Check back later.</td></tr>';
-    }
-  } catch (e) {
-    document.getElementById('resultsBody').innerHTML =
-      '<tr><td colspan="4" class="no-results">Error loading results. Please refresh.</td></tr>';
+  /* ── Toggle password visibility ── */
+  function togglePw(btn) {
+    var inp = document.getElementById('inp-pw');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.innerHTML = inp.type === 'password' ? eyeOpen : eyeOff;
   }
-}
 
-function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('userRole');
-  window.location.href = 'login.html';
-}
+  /* ══════════════════════════════════════
+     LOGIN — calls Netlify function which
+     authenticates against Neon database
+  ══════════════════════════════════════ */
+  async function doLogin() {
+    var email = document.getElementById('inp-id').value.trim();
+    var pw    = document.getElementById('inp-pw').value;
+    var btn   = document.getElementById('login-btn');
 
-loadResults();
+    clearErr();
+
+    if (!email || !pw) {
+      showErr('Please enter your email address and password.');
+      return;
+    }
+
+    /* basic email format check */
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      showErr('Please enter a valid email address.');
+      return;
+    }
+
+    /* show loading spinner on button */
+    btn.disabled = true;
+    btn.innerHTML = '<span style="display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,0.35);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;margin-right:7px"></span>Signing in…';
+
+    try {
+      /* ── POST to Netlify function ── */
+      var res = await fetch('/.netlify/functions/student-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: pw })
+      });
+
+      var data = await res.json();
+
+      if (!res.ok || !data.success) {
+        showErr(data.message || 'Sign in failed. Please check your credentials.');
+        return;
+      }
+
+      /* ── Store response and render ── */
+      _student = data.student;   // { student_id, full_name, faculty, department, year, cgpa }
+      _results = data.results;   // [{ subject_name, year, semester, marks, grade, credit_hours, pass }]
+
+      renderResults();
+
+    } catch (e) {
+      showErr('Could not connect to the server. Please check your internet connection and try again.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Sign In';
+    }
+  }
+
+  function showErr(m) {
+    document.getElementById('err-msg').textContent = m;
+    document.getElementById('err-box').classList.add('show');
+  }
+  function clearErr() {
+    document.getElementById('err-box').classList.remove('show');
+  }
+
+  /* ══════════════════════════════════════
+     RENDER RESULTS
+     Takes the raw Neon data and builds
+     the full results view
+  ══════════════════════════════════════ */
+  function renderResults() {
+    var s = _student;
+
+    /* switch screens */
+    document.getElementById('screen-login').style.display   = 'none';
+    document.getElementById('screen-results').style.display = 'block';
+
+    /* header */
+    document.getElementById('res-name').textContent = s.full_name;
+    document.getElementById('res-sub').textContent  = s.faculty + ' · ' + s.department;
+
+    /* student info strip — includes CGPA from server */
+    document.getElementById('info-strip').innerHTML =
+      ii('Student ID',   s.student_id) +
+      ii('Full Name',    s.full_name) +
+      ii('Faculty',      s.faculty) +
+      ii('Department',   s.department) +
+      ii('Year',         'Year ' + s.year) +
+      (s.cgpa ? ii('Cumulative GPA', s.cgpa + ' / 4.0') : '');
+
+    /* build year tabs from results returned by DB */
+    var yrs = [];
+    _results.forEach(function(r) {
+      if (yrs.indexOf(+r.year) === -1) yrs.push(+r.year);
+    });
+    if (!yrs.length) yrs = [+s.year]; /* fallback if no results yet */
+    yrs.sort();
+
+    document.getElementById('yr-tabs').innerHTML = yrs.map(function(y, i) {
+      return '<button class="yr-tab' + (i === 0 ? ' active' : '') +
+        '" onclick="switchYear(' + y + ', this)">Year ' + y + '</button>';
+    }).join('');
+
+    renderYear(yrs[0]);
+  }
+
+  /* ── Info strip item helper ── */
+  function ii(lbl, val) {
+    return '<div class="ii"><div class="lbl">' + lbl + '</div><div class="val">' + val + '</div></div>';
+  }
+
+  /* ── Switch year tab ── */
+  window.switchYear = function(y, el) {
+    document.querySelectorAll('.yr-tab').forEach(function(t) { t.classList.remove('active'); });
+    el.classList.add('active');
+    renderYear(y);
+  };
+
+  /* ══════════════════════════════════════
+     RENDER YEAR
+     Groups results by semester and
+     renders each as a card with table
+  ══════════════════════════════════════ */
+  function renderYear(yr) {
+    var wrap  = document.getElementById('sems');
+    var yRows = _results.filter(function(r) { return +r.year === +yr; });
+
+    if (!yRows.length) {
+      wrap.innerHTML =
+        '<div class="empty-state">' +
+          '<div class="ei">📋</div>' +
+          '<p>No results posted for Year ' + yr + ' yet.</p>' +
+          '<small>Please contact the Registrar if you believe this is an error.</small>' +
+        '</div>';
+      return;
+    }
+
+    var html = '';
+
+    [1, 2].forEach(function(sem) {
+      var rows = yRows.filter(function(r) { return +r.semester === sem; });
+      if (!rows.length) return;
+
+      /* ── Calculate semester GPA from DB data ── */
+      var pts = 0, hrs = 0;
+      rows.forEach(function(r) {
+        pts += gradePoint(r.grade) * +r.credit_hours;
+        hrs += +r.credit_hours;
+      });
+      var semGpa  = hrs ? (pts / hrs).toFixed(2) : '0.00';
+      var allPass = rows.every(function(r) { return r.pass === true || +r.marks >= 50; });
+
+      /* ── Build table rows ── */
+      var trs = rows.map(function(r) {
+        var pass = r.pass === true || +r.marks >= 50;
+        return '<tr>' +
+          '<td style="font-weight:700">'  + r.subject_name + '</td>' +
+          '<td style="color:var(--tm)">'  + r.credit_hours + ' hrs</td>' +
+          '<td><strong>' + r.marks + '</strong><span style="color:var(--tl);font-size:.8rem">/100</span></td>' +
+          '<td><span class="gp ' + gradeClass(r.grade) + '">' + r.grade + '</span></td>' +
+          '<td style="font-weight:700;color:' + (pass ? '#006b2d' : '#b30000') + '">' + (pass ? '✓ Pass' : '✗ Fail') + '</td>' +
+        '</tr>';
+      }).join('');
+
+      /* ── Build semester card ── */
+      html +=
+        '<div class="sem-card">' +
+          '<div class="sem-head">' +
+            '<h4>Semester ' + sem + '</h4>' +
+            '<span class="sem-badge">' + rows.length + ' Subject' + (rows.length > 1 ? 's' : '') + '</span>' +
+          '</div>' +
+          '<div class="tbl-wrap"><table class="res-tbl">' +
+            '<thead><tr>' +
+              '<th>Subject</th>' +
+              '<th>Credit Hrs</th>' +
+              '<th>Marks</th>' +
+              '<th>Grade</th>' +
+              '<th>Status</th>' +
+            '</tr></thead>' +
+            '<tbody>' + trs + '</tbody>' +
+          '</table></div>' +
+          '<div class="sem-foot">' +
+            '<div class="sf"><div class="sf-l">Semester GPA</div><div class="sf-v">' + semGpa + ' / 4.0</div></div>' +
+            '<div class="sf"><div class="sf-l">Credit Hours</div><div class="sf-v">' + hrs + '</div></div>' +
+            '<div class="sf"><div class="sf-l">Subjects</div><div class="sf-v">' + rows.length + '</div></div>' +
+            '<span class="sf-status">' + (allPass ? '✓ All Passed' : '⚠ Review Required') + '</span>' +
+          '</div>' +
+        '</div>';
+    });
+
+    wrap.innerHTML = html;
+  }
+
+  /* ── Sign out ── */
+  function doLogout() {
+    _student = null; _results = [];
+    document.getElementById('inp-id').value = '';
+    document.getElementById('inp-pw').value = '';
+    document.getElementById('screen-results').style.display = 'none';
+    document.getElementById('screen-login').style.display   = 'block';
+    document.getElementById('sems').innerHTML        = '';
+    document.getElementById('yr-tabs').innerHTML     = '';
+    document.getElementById('info-strip').innerHTML  = '';
+    clearErr();
+  }
+
+  /* ── Grade helpers ── */
+  function gradeClass(g) {
+    if (!g) return 'gf';
+    var c = g[0];
+    return c === 'A' ? 'ga' : c === 'B' ? 'gb' : c === 'C' ? 'gc' : c === 'D' ? 'gd' : 'gf';
+  }
+  function gradePoint(g) {
+    return ({ 'A+':4,'A':4,'A-':3.7,'B+':3.3,'B':3,'B-':2.7,'C+':2.3,'C':2,'C-':1.7,'D':1,'F':0 }[g] || 0);
+  }
+
+  /* ── Enter key triggers login ── */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && document.getElementById('screen-login').style.display !== 'none') {
+      doLogin();
+    }
+  });
 </script>
 </body>
 </html>
