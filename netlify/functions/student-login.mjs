@@ -1,35 +1,24 @@
 import { neon } from '@neondatabase/serverless';
-import bcrypt from 'bcryptjs';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Content-Type': 'application/json',
 };
 
-function gradeFromMarks(marks) {
-  if (marks >= 90) return 'A+';
-  if (marks >= 85) return 'A';
-  if (marks >= 80) return 'A-';
-  if (marks >= 75) return 'B+';
-  if (marks >= 70) return 'B';
-  if (marks >= 65) return 'B-';
-  if (marks >= 60) return 'C+';
-  if (marks >= 55) return 'C';
-  if (marks >= 50) return 'C-';
-  if (marks >= 45) return 'D';
-  return 'F';
-}
+const DEFAULT_GRADES = [
+  { grade:'A+', min_marks:90 }, { grade:'A',  min_marks:85 },
+  { grade:'A-', min_marks:80 }, { grade:'B+', min_marks:75 },
+  { grade:'B',  min_marks:70 }, { grade:'B-', min_marks:65 },
+  { grade:'C+', min_marks:60 }, { grade:'C',  min_marks:55 },
+  { grade:'C-', min_marks:50 }, { grade:'D',  min_marks:45 },
+  { grade:'F',  min_marks:0  },
+];
 
-function gradePoint(g) {
-  const map = {
-    'A+': 4.0, 'A': 4.0, 'A-': 3.7,
-    'B+': 3.3, 'B': 3.0, 'B-': 2.7,
-    'C+': 2.3, 'C': 2.0, 'C-': 1.7,
-    'D':  1.0, 'F': 0.0,
-  };
-  return map[g] ?? 0;
+function gradePoint(grade, scale) {
+  const g = scale.find(s => s.grade === grade);
+  return g ? parseFloat(g.grade_point) : 0;
 }
 
 export const handler = async (event) => {
@@ -38,52 +27,55 @@ export const handler = async (event) => {
 
   let email, password;
   try {
-    const body = JSON.parse(event.body || '{}');
-    email    = body.email;
-    password = body.password;
+    ({ email, password } = JSON.parse(event.body || '{}'));
   } catch {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ success: false, message: 'Invalid request body' }) };
   }
 
-  if (!email || !password) return { statusCode: 400, headers: CORS, body: JSON.stringify({ success: false, message: 'Email and password are required' }) };
-  if (!process.env.DATABASE_URL) return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Database not configured' }) };
+  if (!email || !password)
+    return { statusCode: 400, headers: CORS, body: JSON.stringify({ success: false, message: 'Email and password required' }) };
 
   try {
     const sql = neon(process.env.DATABASE_URL);
 
+    // Find student by email with plain text password
     const rows = await sql`
-      SELECT student_id, email, full_name, faculty, department, year, password_hash
-      FROM students
-      WHERE LOWER(email) = LOWER(${email.trim()})
+      SELECT * FROM students
+      WHERE LOWER(email) = LOWER(${email})
+      AND password_hash = ${password}
       LIMIT 1
     `;
 
-    if (!rows.length) return { statusCode: 401, headers: CORS, body: JSON.stringify({ success: false, message: 'No account found with that email address' }) };
+    if (!rows.length)
+      return { statusCode: 401, headers: CORS, body: JSON.stringify({ success: false, message: 'Invalid email or password' }) };
 
     const student = rows[0];
-    const valid = await bcrypt.compare(password, student.password_hash);
-    if (!valid) return { statusCode: 401, headers: CORS, body: JSON.stringify({ success: false, message: 'Incorrect password. Please try again.' }) };
 
+    // Fetch results
     const results = await sql`
-      SELECT id, subject_name, year, semester, marks, grade, credit_hours
+      SELECT subject_name, year, semester, marks, grade, credit_hours
       FROM results
       WHERE student_id = ${student.student_id}
       ORDER BY year ASC, semester ASC, subject_name ASC
     `;
 
-    const enriched = results.map(r => ({
-      id:           r.id,
-      subject_name: r.subject_name,
-      year:         Number(r.year),
-      semester:     Number(r.semester),
-      marks:        Number(r.marks),
-      grade:        r.grade || gradeFromMarks(Number(r.marks)),
-      credit_hours: Number(r.credit_hours),
-      pass:         Number(r.marks) >= 50,
-    }));
+    // Fetch grading scale for GPA calculation
+    let gradeScale = DEFAULT_GRADES;
+    try {
+      const gs = await sql`SELECT grade, grade_point FROM grading_system ORDER BY min_marks DESC`;
+      if (gs.length) gradeScale = gs;
+    } catch { /* use defaults */ }
 
+    // Calculate CGPA
     let totalPts = 0, totalHrs = 0;
-    enriched.forEach(r => { totalPts += gradePoint(r.grade) * r.credit_hours; totalHrs += r.credit_hours; });
+    const enriched = results.map(r => {
+      const pass = parseFloat(r.marks) >= 50;
+      const gp   = gradePoint(r.grade, gradeScale);
+      totalPts += gp * parseFloat(r.credit_hours);
+      totalHrs += parseFloat(r.credit_hours);
+      return { ...r, pass };
+    });
+
     const cgpa = totalHrs ? (totalPts / totalHrs).toFixed(2) : null;
 
     return {
@@ -92,12 +84,12 @@ export const handler = async (event) => {
       body: JSON.stringify({
         success: true,
         student: {
-          student_id: student.student_id,
-          email:      student.email,
-          full_name:  student.full_name,
-          faculty:    student.faculty,
-          department: student.department,
-          year:       student.year,
+          student_id:  student.student_id,
+          full_name:   student.full_name,
+          email:       student.email,
+          faculty:     student.faculty,
+          department:  student.department,
+          year:        student.year,
           cgpa,
         },
         results: enriched,
@@ -105,6 +97,6 @@ export const handler = async (event) => {
     };
   } catch (e) {
     console.error('[student-login]', e.message);
-    return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'A server error occurred. Please try again.' }) };
+    return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Server error: ' + e.message }) };
   }
 };
