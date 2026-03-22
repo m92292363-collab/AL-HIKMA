@@ -17,132 +17,162 @@
       --tl:      #6b8f79;
       --border:  #d4e8dc;
       --danger:  #e53935;
-      --sidebar: 260px;
+      --sidebar: 268px;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Nunito Sans', sans-serif; background: #f4f7f5; color: var(--td); min-height: 100vh; }
+    body { font-family: 'Nunito Sans', sans-serif; background: #f2f6f4; color: var(--td); min-height: 100vh; }
 
-    #login-screen { position: fixed; inset: 0; z-index: 9999; background: linear-gradient(135deg, #004d25 0%, var(--g-dark) 60%, var(--g-mid) 100%); display: flex; align-items: center; justify-content: center; padding: 20px; }
+    /* ── LOGIN ── */
+    #login-screen { position: fixed; inset: 0; z-index: 9999; background: linear-gradient(135deg, #003d20 0%, var(--g-dark) 55%, var(--g-mid) 100%); display: flex; align-items: center; justify-content: center; padding: 20px; }
     #login-screen.hidden { display: none; }
-    .login-box { background: var(--white); border-radius: 20px; width: 100%; max-width: 420px; box-shadow: 0 40px 80px rgba(0,0,0,.3); overflow: hidden; }
-    .lb-head { background: linear-gradient(135deg, var(--g-dark), var(--g-mid)); padding: 30px; text-align: center; position: relative; overflow: hidden; }
-    .lb-head::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.05'%3E%3Ccircle cx='20' cy='20' r='10'/%3E%3C/g%3E%3C/svg%3E"); }
-    .lb-icon { width: 64px; height: 64px; background: rgba(255,255,255,.18); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 14px; position: relative; }
-    .lb-head h2 { font-family: 'Amiri', serif; color: #fff; font-size: 1.35rem; position: relative; margin-bottom: 4px; }
-    .lb-head p  { color: rgba(255,255,255,.75); font-size: .8rem; position: relative; }
+    .login-box { background: var(--white); border-radius: 22px; width: 100%; max-width: 400px; box-shadow: 0 40px 80px rgba(0,0,0,.35); overflow: hidden; }
+    .lb-head { background: linear-gradient(135deg, var(--g-dark), var(--g-mid)); padding: 32px 30px 26px; text-align: center; position: relative; overflow: hidden; }
+    .lb-head::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E"); }
+    .lb-icon { width: 64px; height: 64px; background: rgba(255,255,255,.15); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; position: relative; }
+    .lb-head h2 { font-family: 'Amiri', serif; color: #fff; font-size: 1.5rem; position: relative; }
+    .lb-head p  { color: rgba(255,255,255,.72); font-size: .8rem; margin-top: 5px; position: relative; }
     .lb-body { padding: 28px 28px 32px; }
     .fg { margin-bottom: 16px; }
-    .fg label { display: block; font-size: .72rem; font-weight: 700; color: var(--tm); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .06em; }
-    .fg input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'Nunito Sans', sans-serif; font-size: .93rem; color: var(--td); background: var(--g-pale); outline: none; transition: border-color .2s, box-shadow .2s; }
+    .fg label { display: block; font-size: .72rem; font-weight: 700; color: var(--tm); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .06em; }
+    .fg input { width: 100%; padding: 12px 15px; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'Nunito Sans', sans-serif; font-size: .93rem; color: var(--td); background: var(--g-pale); outline: none; transition: border-color .2s, box-shadow .2s; }
     .fg input:focus { border-color: var(--g-mid); box-shadow: 0 0 0 3px rgba(0,171,82,.12); background: #fff; }
     .btn-primary { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--g-dark), var(--g-mid)); color: #fff; border: none; border-radius: 10px; font-family: 'Nunito Sans', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity .2s, transform .15s; }
     .btn-primary:hover { opacity: .9; transform: translateY(-1px); }
     .btn-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
-    .err-box { display: none; margin-top: 12px; background: #fff0f0; border: 1px solid #ffcccc; color: #cc0000; border-radius: 8px; padding: 9px 13px; font-size: .83rem; }
+    .err-box { display: none; margin-top: 12px; background: #fff0f0; border: 1px solid #ffcccc; color: #cc0000; border-radius: 8px; padding: 9px 14px; font-size: .83rem; }
     .err-box.show { display: block; }
 
+    /* ── APP ── */
     #app { display: none; min-height: 100vh; }
     #app.show { display: flex; }
 
+    /* ── SIDEBAR ── */
     .sidebar { width: var(--sidebar); background: var(--g-dark); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
-    .sb-logo { padding: 20px 18px 16px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .sb-logo { padding: 22px 20px 18px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .sb-logo-icon { width: 38px; height: 38px; background: rgba(255,255,255,.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
     .sb-logo .dept-name { color: #fff; font-family: 'Amiri', serif; font-size: 1rem; line-height: 1.3; }
     .sb-logo .fac-name  { color: rgba(255,255,255,.5); font-size: .68rem; margin-top: 3px; }
-    .sb-logo .portal-tag { display: inline-block; background: rgba(255,255,255,.12); color: rgba(255,255,255,.7); font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: 2px 8px; border-radius: 100px; margin-top: 6px; }
-    .sb-nav { flex: 1; padding: 14px 10px; }
-    .sb-section { color: rgba(255,255,255,.35); font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; padding: 14px 8px 5px; }
-    .sb-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 9px; color: rgba(255,255,255,.7); font-size: .88rem; font-weight: 600; cursor: pointer; transition: all .18s; border: none; background: none; width: 100%; text-align: left; margin-bottom: 2px; }
+    .sb-logo .portal-tag { display: inline-block; background: rgba(255,255,255,.12); color: rgba(255,255,255,.65); font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: 2px 9px; border-radius: 100px; margin-top: 8px; }
+    .sb-nav { flex: 1; padding: 14px 10px; overflow-y: auto; }
+    .sb-section { color: rgba(255,255,255,.3); font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; padding: 16px 10px 6px; }
+    .sb-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 9px; color: rgba(255,255,255,.68); font-size: .875rem; font-weight: 600; cursor: pointer; transition: all .18s; border: none; background: none; width: 100%; text-align: left; margin-bottom: 2px; }
     .sb-item:hover  { background: rgba(255,255,255,.1); color: #fff; }
-    .sb-item.active { background: rgba(255,255,255,.18); color: #fff; }
-    .sb-item .ic { font-size: 1rem; width: 20px; text-align: center; }
+    .sb-item.active { background: rgba(255,255,255,.17); color: #fff; }
+    .sb-item svg { flex-shrink: 0; opacity: .75; }
+    .sb-item.active svg, .sb-item:hover svg { opacity: 1; }
     .sb-foot { padding: 14px 10px; border-top: 1px solid rgba(255,255,255,.1); }
-    .dept-chip { background: rgba(255,255,255,.1); border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .dept-chip { background: rgba(255,255,255,.09); border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
     .dept-av   { width: 34px; height: 34px; border-radius: 50%; background: var(--g-mid); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: .85rem; flex-shrink: 0; }
     .dept-info .nm { color: #fff; font-size: .8rem; font-weight: 700; line-height: 1.3; }
-    .dept-info .rl { color: rgba(255,255,255,.45); font-size: .65rem; }
-    .btn-logout { width: 100%; padding: 9px; border-radius: 8px; background: rgba(229,57,53,.15); border: 1px solid rgba(229,57,53,.3); color: #ff8a80; font-family: 'Nunito Sans', sans-serif; font-size: .83rem; font-weight: 700; cursor: pointer; transition: background .2s; }
-    .btn-logout:hover { background: rgba(229,57,53,.28); }
+    .dept-info .rl { color: rgba(255,255,255,.4); font-size: .67rem; }
+    .btn-logout { width: 100%; padding: 9px 12px; border-radius: 8px; background: rgba(229,57,53,.12); border: 1px solid rgba(229,57,53,.25); color: #ff8a80; font-family: 'Nunito Sans', sans-serif; font-size: .83rem; font-weight: 700; cursor: pointer; transition: background .2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-logout:hover { background: rgba(229,57,53,.25); }
 
+    /* ── MAIN ── */
     .main { margin-left: var(--sidebar); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
-    .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 15px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
-    .topbar h3 { font-size: 1.05rem; font-weight: 900; }
+    .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 16px 30px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+    .topbar h3 { font-size: 1.05rem; font-weight: 900; color: var(--td); }
     .topbar p  { font-size: .78rem; color: var(--tl); margin-top: 1px; }
-    .content { padding: 26px 28px; flex: 1; }
+    .content { padding: 28px 30px; flex: 1; }
 
+    /* ── PAGES ── */
     .page { display: none; }
     .page.active { display: block; }
 
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 16px; margin-bottom: 24px; }
-    .stat-card { background: var(--white); border-radius: 14px; padding: 20px 22px; border: 1.5px solid var(--border); position: relative; overflow: hidden; }
-    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--g-dark), var(--g-mid)); }
-    .stat-card .sc-icon { font-size: 1.5rem; margin-bottom: 10px; }
-    .stat-card .sc-val  { font-size: 1.8rem; font-weight: 900; color: var(--td); font-family: 'Amiri', serif; }
-    .stat-card .sc-lbl  { font-size: .7rem; color: var(--tl); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; margin-top: 3px; }
+    /* ── DEPT BANNER ── */
+    .dept-banner { background: linear-gradient(135deg, var(--g-dark), var(--g-mid)); border-radius: 16px; padding: 22px 26px; margin-bottom: 24px; display: flex; align-items: center; gap: 18px; position: relative; overflow: hidden; }
+    .dept-banner::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E"); }
+    .dept-banner .db-icon { width: 52px; height: 52px; background: rgba(255,255,255,.18); border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
+    .dept-banner h3 { color: #fff; font-family: 'Amiri', serif; font-size: 1.3rem; margin-bottom: 4px; position: relative; }
+    .dept-banner p  { color: rgba(255,255,255,.75); font-size: .82rem; position: relative; }
 
-    .card { background: var(--white); border-radius: 14px; border: 1.5px solid var(--border); overflow: hidden; margin-bottom: 22px; }
-    .card-head { padding: 15px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-    .card-head h4 { font-size: .95rem; font-weight: 900; }
+    /* ── STATS ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--white); border-radius: 16px; padding: 20px 22px; border: 1.5px solid var(--border); position: relative; overflow: hidden; transition: transform .2s, box-shadow .2s; }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,121,58,.1); }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3.5px; background: linear-gradient(90deg, var(--g-dark), var(--g-mid)); border-radius: 16px 16px 0 0; }
+    .stat-card .sc-icon { width: 42px; height: 42px; background: var(--g-pale); border-radius: 11px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .stat-card .sc-val  { font-size: 1.9rem; font-weight: 900; color: var(--td); font-family: 'Amiri', serif; line-height: 1; }
+    .stat-card .sc-lbl  { font-size: .7rem; color: var(--tl); text-transform: uppercase; letter-spacing: .07em; font-weight: 700; margin-top: 5px; }
 
-    .form-card { background: var(--white); border-radius: 14px; border: 1.5px solid var(--border); padding: 26px; max-width: 640px; margin-bottom: 22px; }
-    .form-card h4 { font-size: .95rem; font-weight: 900; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    /* ── CARD ── */
+    .card { background: var(--white); border-radius: 16px; border: 1.5px solid var(--border); overflow: hidden; margin-bottom: 22px; }
+    .card-head { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .card-head h4 { font-size: .95rem; font-weight: 900; color: var(--td); }
+
+    /* ── FORM ── */
+    .form-card { background: var(--white); border-radius: 16px; border: 1.5px solid var(--border); padding: 26px; max-width: 660px; margin-bottom: 22px; }
+    .form-card h4 { font-size: .95rem; font-weight: 900; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border); color: var(--td); }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: .72rem; font-weight: 700; color: var(--tm); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .05em; }
+    .form-group label { display: block; font-size: .72rem; font-weight: 700; color: var(--tm); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
     .form-group input,
     .form-group select { width: 100%; padding: 10px 13px; border: 1.5px solid var(--border); border-radius: 9px; font-family: 'Nunito Sans', sans-serif; font-size: .9rem; color: var(--td); background: var(--g-pale); outline: none; transition: border-color .2s; }
     .form-group input:focus,
     .form-group select:focus { border-color: var(--g-mid); background: #fff; }
+    .form-group input[readonly] { opacity: .6; cursor: not-allowed; }
 
+    /* ── SEARCH ── */
     .search-bar { padding: 8px 13px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Nunito Sans', sans-serif; font-size: .85rem; outline: none; transition: border-color .2s; width: 220px; }
     .search-bar:focus { border-color: var(--g-mid); }
 
+    /* ── TABLE ── */
     .tbl-wrap { overflow-x: auto; }
-    .data-tbl { width: 100%; border-collapse: collapse; font-size: .87rem; }
-    .data-tbl th { background: var(--g-pale); color: var(--tm); font-weight: 700; font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; padding: 10px 16px; text-align: left; border-bottom: 1.5px solid var(--border); }
-    .data-tbl td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .data-tbl { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    .data-tbl th { background: var(--g-pale); color: var(--tm); font-weight: 700; font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; padding: 11px 18px; text-align: left; border-bottom: 1.5px solid var(--border); }
+    .data-tbl td { padding: 13px 18px; border-bottom: 1px solid var(--border); vertical-align: middle; }
     .data-tbl tr:last-child td { border-bottom: none; }
     .data-tbl tr:hover td { background: var(--g-pale); }
-    .empty-row td { text-align: center; padding: 40px; color: var(--tl); }
+    .empty-row td { text-align: center; padding: 44px; color: var(--tl); font-size: .88rem; }
 
-    .badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: .73rem; font-weight: 700; }
+    /* ── BADGES ── */
+    .badge { display: inline-block; padding: 3px 11px; border-radius: 100px; font-size: .73rem; font-weight: 700; }
     .badge-green { background: #d4f5e3; color: #006b2d; }
     .badge-blue  { background: #dceeff; color: #0055a5; }
     .badge-red   { background: #ffe0e0; color: #b30000; }
-    .badge-gray  { background: #f0f0f0; color: #666; }
+    .badge-gray  { background: #f0f0f0; color: #555; }
     .badge-warn  { background: #fff6d4; color: #856200; }
 
-    .btn { padding: 8px 18px; border-radius: 8px; font-family: 'Nunito Sans', sans-serif; font-size: .85rem; font-weight: 700; cursor: pointer; transition: all .18s; border: none; }
+    /* ── BUTTONS ── */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 8px; font-family: 'Nunito Sans', sans-serif; font-size: .85rem; font-weight: 700; cursor: pointer; transition: all .18s; border: none; }
     .btn-green  { background: var(--g-dark); color: #fff; }
     .btn-green:hover { background: var(--g-mid); }
     .btn-outline { background: #fff; color: var(--tm); border: 1.5px solid var(--border); }
     .btn-outline:hover { border-color: var(--g-mid); color: var(--g-dark); }
     .btn-danger { background: var(--danger); color: #fff; }
     .btn-danger:hover { background: #c62828; }
-    .btn-sm { padding: 6px 14px; font-size: .78rem; }
+    .btn-sm { padding: 5px 12px; font-size: .78rem; }
     .btn:disabled { opacity: .6; cursor: not-allowed; }
 
-    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,30,15,.55); backdrop-filter: blur(3px); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+    /* ── MODAL ── */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,25,12,.6); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
     .overlay.open { display: flex; }
-    .modal-box { background: #fff; border-radius: 18px; width: 100%; max-width: 420px; box-shadow: 0 32px 80px rgba(0,0,0,.25); animation: popIn .28s cubic-bezier(.34,1.56,.64,1); }
+    .modal-box { background: #fff; border-radius: 18px; width: 100%; max-width: 420px; box-shadow: 0 32px 80px rgba(0,0,0,.28); animation: popIn .28s cubic-bezier(.34,1.56,.64,1); }
     @keyframes popIn { from{transform:scale(.88);opacity:0} to{transform:scale(1);opacity:1} }
     .modal-box .mh { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .modal-box .mh h3 { font-size: 1rem; font-weight: 900; }
-    .modal-box .mb { padding: 20px 24px; color: var(--tm); line-height: 1.6; font-size: .9rem; }
+    .modal-box .mb { padding: 22px 24px; }
     .modal-box .mf { padding: 14px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
-    .x-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--tl); padding: 4px 8px; border-radius: 6px; }
-    .x-btn:hover { background: var(--g-pale); }
+    .x-btn { background: none; border: none; cursor: pointer; color: var(--tl); padding: 4px; border-radius: 6px; display: flex; align-items: center; }
+    .x-btn:hover { background: var(--g-pale); color: var(--td); }
 
-    #toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; background: var(--g-dark); color: #fff; padding: 13px 20px; border-radius: 12px; font-weight: 700; font-size: .88rem; box-shadow: 0 8px 24px rgba(0,0,0,.2); transform: translateY(80px); opacity: 0; transition: all .3s; max-width: 320px; }
+    /* ── UPDATE RESULT FOUND BOX ── */
+    .found-box { display:none; background:var(--g-pale); border:1.5px solid var(--g-light); border-radius:10px; padding:14px 16px; margin-bottom:16px; }
+    .found-box.show { display:block; }
+    .found-box .fb-label { font-size:.72rem; font-weight:700; color:var(--g-dark); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
+    .found-stats { display:flex; gap:20px; flex-wrap:wrap; }
+    .found-stats .fs-item .lbl { font-size:.68rem; color:var(--tl); font-weight:700; text-transform:uppercase; }
+    .found-stats .fs-item .val { font-weight:900; font-size:1.1rem; color:var(--td); }
+    .notfound-box { display:none; background:#fff6d4; border:1px solid #f5d87e; border-radius:9px; padding:10px 14px; font-size:.83rem; color:#856200; margin-bottom:14px; }
+    .notfound-box.show { display:block; }
+
+    /* ── TOAST ── */
+    #toast { position: fixed; bottom: 26px; right: 26px; z-index: 9999; background: var(--g-dark); color: #fff; padding: 13px 20px; border-radius: 12px; font-weight: 700; font-size: .88rem; box-shadow: 0 8px 28px rgba(0,0,0,.22); transform: translateY(80px); opacity: 0; transition: all .3s; max-width: 340px; }
     #toast.show  { transform: translateY(0); opacity: 1; }
     #toast.error { background: var(--danger); }
 
     .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: sp .6s linear infinite; vertical-align: middle; margin-right: 6px; }
     @keyframes sp { to{transform:rotate(360deg)} }
-
-    .dept-banner { background: linear-gradient(135deg, var(--g-dark), var(--g-mid)); border-radius: 14px; padding: 20px 24px; margin-bottom: 22px; display: flex; align-items: center; gap: 16px; }
-    .dept-banner .db-icon { font-size: 2rem; }
-    .dept-banner h3 { color: #fff; font-family: 'Amiri', serif; font-size: 1.2rem; margin-bottom: 3px; }
-    .dept-banner p  { color: rgba(255,255,255,.75); font-size: .8rem; }
 
     @media (max-width: 768px) {
       .sidebar  { transform: translateX(-100%); }
@@ -154,11 +184,13 @@
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ── LOGIN ── -->
 <div id="login-screen">
   <div class="login-box">
     <div class="lb-head">
-      <div class="lb-icon">🏛️</div>
+      <div class="lb-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
       <h2>Departmental Portal</h2>
       <p>Al-Hikma University – GIU</p>
     </div>
@@ -177,24 +209,48 @@
   </div>
 </div>
 
-<!-- APP -->
+<!-- ── APP ── -->
 <div id="app">
+
   <div class="sidebar">
     <div class="sb-logo">
+      <div class="sb-logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </div>
       <div class="dept-name" id="sb-dept-name">Department</div>
       <div class="fac-name"  id="sb-fac-name">Faculty</div>
       <span class="portal-tag">Departmental Portal</span>
     </div>
     <nav class="sb-nav">
       <div class="sb-section">Overview</div>
-      <button class="sb-item active" onclick="goPage('dashboard',this)"><span class="ic">📊</span>Dashboard</button>
+      <button class="sb-item active" onclick="goPage('dashboard',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+
       <div class="sb-section">Students</div>
-      <button class="sb-item" onclick="goPage('students',this)"><span class="ic">🎓</span>Our Students</button>
-      <button class="sb-item" onclick="goPage('add-student',this)"><span class="ic">➕</span>Add Student</button>
+      <button class="sb-item" onclick="goPage('students',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Our Students
+      </button>
+      <button class="sb-item" onclick="goPage('add-student',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        Add Student
+      </button>
+
       <div class="sb-section">Results</div>
-      <button class="sb-item" onclick="goPage('results',this)"><span class="ic">📝</span>Our Results</button>
-      <button class="sb-item" onclick="goPage('add-result',this)"><span class="ic">✏️</span>Enter Result</button>
-      <button class="sb-item" onclick="goPage('update-result',this)"><span class="ic">🔄</span>Update Result</button>
+      <button class="sb-item" onclick="goPage('results',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Our Results
+      </button>
+      <button class="sb-item" onclick="goPage('add-result',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Enter Result
+      </button>
+      <button class="sb-item" onclick="goPage('update-result',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.24"/></svg>
+        Update Result
+      </button>
     </nav>
     <div class="sb-foot">
       <div class="dept-chip">
@@ -204,7 +260,10 @@
           <div class="rl">Departmental Staff</div>
         </div>
       </div>
-      <button class="btn-logout" onclick="doLogout()">⬅ Sign Out</button>
+      <button class="btn-logout" onclick="doLogout()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </button>
     </div>
   </div>
 
@@ -215,25 +274,40 @@
         <p  id="page-sub">Your department overview</p>
       </div>
     </div>
+
     <div class="content">
 
       <!-- DASHBOARD -->
       <div class="page active" id="page-dashboard">
         <div class="dept-banner">
-          <div class="db-icon">🏛️</div>
+          <div class="db-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </div>
           <div>
             <h3 id="banner-dept">Department</h3>
             <p  id="banner-fac">Faculty · Al-Hikma University, GIU</p>
           </div>
         </div>
         <div class="stats-grid">
-          <div class="stat-card"><div class="sc-icon">🎓</div><div class="sc-val" id="d-students">—</div><div class="sc-lbl">Our Students</div></div>
-          <div class="stat-card"><div class="sc-icon">📝</div><div class="sc-val" id="d-results">—</div><div class="sc-lbl">Results Entered</div></div>
-          <div class="stat-card"><div class="sc-icon">✓</div><div class="sc-val" id="d-passed">—</div><div class="sc-lbl">Passed</div></div>
-          <div class="stat-card"><div class="sc-icon">⚠</div><div class="sc-val" id="d-failed">—</div><div class="sc-lbl">Failed</div></div>
+          <div class="stat-card">
+            <div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--g-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div class="sc-val" id="d-students">—</div><div class="sc-lbl">Our Students</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--g-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <div class="sc-val" id="d-results">—</div><div class="sc-lbl">Results Entered</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--g-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="sc-val" id="d-passed">—</div><div class="sc-lbl">Passed</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--g-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+            <div class="sc-val" id="d-failed">—</div><div class="sc-lbl">Failed</div>
+          </div>
         </div>
         <div class="card">
-          <div class="card-head"><h4>Recent Students in Our Department</h4></div>
+          <div class="card-head"><h4>Recent Students</h4></div>
           <div class="tbl-wrap">
             <table class="data-tbl">
               <thead><tr><th>Student ID</th><th>Name</th><th>Email</th><th>Year</th><th>Results</th></tr></thead>
@@ -252,10 +326,8 @@
               <input class="search-bar" id="s-search" placeholder="Search name, ID or email…" oninput="filterStudents()"/>
               <select class="search-bar" id="s-year" style="width:auto" onchange="filterStudents()">
                 <option value="">All Years</option>
-                <option value="1">Year 1</option>
-                <option value="2">Year 2</option>
-                <option value="3">Year 3</option>
-                <option value="4">Year 4</option>
+                <option value="1">Year 1</option><option value="2">Year 2</option>
+                <option value="3">Year 3</option><option value="4">Year 4</option>
               </select>
             </div>
           </div>
@@ -271,48 +343,31 @@
       <!-- ADD STUDENT -->
       <div class="page" id="page-add-student">
         <div class="form-card">
-          <h4>➕ Add Student to Our Department</h4>
+          <h4>Add Student to Our Department</h4>
           <div class="form-row">
-            <div class="form-group">
-              <label>Student ID</label>
-              <input type="text" id="ns-id" placeholder="GIU-2024-001"/>
-            </div>
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" id="ns-name" placeholder="Full name"/>
-            </div>
+            <div class="form-group"><label>Student ID</label><input type="text" id="ns-id" placeholder="GIU-2024-001"/></div>
+            <div class="form-group"><label>Full Name</label><input type="text" id="ns-name" placeholder="Full name"/></div>
           </div>
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" id="ns-email" placeholder="student@gmail.com"/>
-          </div>
+          <div class="form-group"><label>Email Address</label><input type="email" id="ns-email" placeholder="student@gmail.com"/></div>
           <div class="form-row">
             <div class="form-group">
               <label>Year</label>
               <select id="ns-year">
                 <option value="">Select Year</option>
-                <option value="1">Year 1</option>
-                <option value="2">Year 2</option>
-                <option value="3">Year 3</option>
-                <option value="4">Year 4</option>
+                <option value="1">Year 1</option><option value="2">Year 2</option>
+                <option value="3">Year 3</option><option value="4">Year 4</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Password</label>
-              <input type="password" id="ns-pw" placeholder="Set login password"/>
-            </div>
+            <div class="form-group"><label>Password</label><input type="password" id="ns-pw" placeholder="Set login password"/></div>
           </div>
-          <div class="form-row" style="margin-bottom:6px">
-            <div class="form-group">
-              <label>Faculty (auto)</label>
-              <input type="text" id="ns-fac-display" readonly style="opacity:.6;cursor:not-allowed"/>
-            </div>
-            <div class="form-group">
-              <label>Department (auto)</label>
-              <input type="text" id="ns-dept-display" readonly style="opacity:.6;cursor:not-allowed"/>
-            </div>
+          <div class="form-row">
+            <div class="form-group"><label>Faculty (auto)</label><input type="text" id="ns-fac-display" readonly/></div>
+            <div class="form-group"><label>Department (auto)</label><input type="text" id="ns-dept-display" readonly/></div>
           </div>
-          <button class="btn btn-green" id="ns-btn" onclick="addStudent()">Add Student</button>
+          <button class="btn btn-green" id="ns-btn" onclick="addStudent()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Student
+          </button>
         </div>
       </div>
 
@@ -325,15 +380,12 @@
               <input class="search-bar" id="r-search" placeholder="Search student ID…" oninput="filterResults()"/>
               <select class="search-bar" id="r-year" style="width:auto" onchange="filterResults()">
                 <option value="">All Years</option>
-                <option value="1">Year 1</option>
-                <option value="2">Year 2</option>
-                <option value="3">Year 3</option>
-                <option value="4">Year 4</option>
+                <option value="1">Year 1</option><option value="2">Year 2</option>
+                <option value="3">Year 3</option><option value="4">Year 4</option>
               </select>
               <select class="search-bar" id="r-sem" style="width:auto" onchange="filterResults()">
                 <option value="">All Semesters</option>
-                <option value="1">Semester 1</option>
-                <option value="2">Semester 2</option>
+                <option value="1">Semester 1</option><option value="2">Semester 2</option>
               </select>
             </div>
           </div>
@@ -349,99 +401,59 @@
       <!-- ENTER RESULT -->
       <div class="page" id="page-add-result">
         <div class="form-card">
-          <h4>✏️ Enter Student Result</h4>
+          <h4>Enter Student Result</h4>
           <div class="form-row">
-            <div class="form-group">
-              <label>Student ID</label>
-              <input type="text" id="nr-sid" placeholder="GIU-2024-001"/>
-            </div>
-            <div class="form-group">
-              <label>Subject Name</label>
-              <input type="text" id="nr-subject" placeholder="e.g. Fiqh I"/>
-            </div>
+            <div class="form-group"><label>Student ID</label><input type="text" id="nr-sid" placeholder="GIU-2024-001"/></div>
+            <div class="form-group"><label>Subject Name</label><input type="text" id="nr-subject" placeholder="e.g. Fiqh I"/></div>
           </div>
           <div class="form-row">
-            <div class="form-group">
-              <label>Year</label>
-              <select id="nr-year">
-                <option value="1">Year 1</option>
-                <option value="2">Year 2</option>
-                <option value="3">Year 3</option>
-                <option value="4">Year 4</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Semester</label>
-              <select id="nr-sem">
-                <option value="1">Semester 1</option>
-                <option value="2">Semester 2</option>
-              </select>
-            </div>
+            <div class="form-group"><label>Year</label><select id="nr-year"><option value="1">Year 1</option><option value="2">Year 2</option><option value="3">Year 3</option><option value="4">Year 4</option></select></div>
+            <div class="form-group"><label>Semester</label><select id="nr-sem"><option value="1">Semester 1</option><option value="2">Semester 2</option></select></div>
           </div>
           <div class="form-row">
-            <div class="form-group">
-              <label>Marks (0–100)</label>
-              <input type="number" id="nr-marks" placeholder="e.g. 85" min="0" max="100"/>
-            </div>
-            <div class="form-group">
-              <label>Credit Hours</label>
-              <input type="number" id="nr-credits" value="3" min="1" max="6"/>
-            </div>
+            <div class="form-group"><label>Marks (0–100)</label><input type="number" id="nr-marks" placeholder="e.g. 85" min="0" max="100"/></div>
+            <div class="form-group"><label>Credit Hours</label><input type="number" id="nr-credits" value="3" min="1" max="6"/></div>
           </div>
-          <p style="font-size:.78rem;color:var(--tl);margin-bottom:14px">⚠ If a result already exists it will be updated automatically.</p>
-          <button class="btn btn-green" id="nr-btn" onclick="enterResult()">Save Result</button>
+          <p style="font-size:.78rem;color:var(--tl);margin-bottom:14px;display:flex;align-items:center;gap:6px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            If a result already exists it will be updated automatically.
+          </p>
+          <button class="btn btn-green" id="nr-btn" onclick="enterResult()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Result
+          </button>
         </div>
       </div>
 
       <!-- UPDATE RESULT -->
       <div class="page" id="page-update-result">
         <div class="form-card">
-          <h4>🔄 Update Existing Result</h4>
-          <p style="font-size:.83rem;color:var(--tl);margin-bottom:20px">Search for an existing result and update the marks.</p>
+          <h4>Update Existing Result</h4>
+          <p style="font-size:.83rem;color:var(--tl);margin-bottom:20px">Search for an existing result then enter the new marks.</p>
           <div class="form-row">
-            <div class="form-group">
-              <label>Student ID</label>
-              <input type="text" id="ur-sid" placeholder="GIU-2024-001" oninput="searchResultForUpdate()"/>
-            </div>
-            <div class="form-group">
-              <label>Subject Name</label>
-              <input type="text" id="ur-subject" placeholder="e.g. Fiqh I" oninput="searchResultForUpdate()"/>
-            </div>
+            <div class="form-group"><label>Student ID</label><input type="text" id="ur-sid" placeholder="GIU-2024-001" oninput="searchResultForUpdate()"/></div>
+            <div class="form-group"><label>Subject Name</label><input type="text" id="ur-subject" placeholder="e.g. Fiqh I" oninput="searchResultForUpdate()"/></div>
           </div>
           <div class="form-row">
-            <div class="form-group">
-              <label>Year</label>
-              <select id="ur-year" onchange="searchResultForUpdate()">
-                <option value="1">Year 1</option>
-                <option value="2">Year 2</option>
-                <option value="3">Year 3</option>
-                <option value="4">Year 4</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Semester</label>
-              <select id="ur-sem" onchange="searchResultForUpdate()">
-                <option value="1">Semester 1</option>
-                <option value="2">Semester 2</option>
-              </select>
+            <div class="form-group"><label>Year</label><select id="ur-year" onchange="searchResultForUpdate()"><option value="1">Year 1</option><option value="2">Year 2</option><option value="3">Year 3</option><option value="4">Year 4</option></select></div>
+            <div class="form-group"><label>Semester</label><select id="ur-sem" onchange="searchResultForUpdate()"><option value="1">Semester 1</option><option value="2">Semester 2</option></select></div>
+          </div>
+
+          <div class="found-box" id="ur-found">
+            <div class="fb-label">Current Record Found</div>
+            <div class="found-stats">
+              <div class="fs-item"><div class="lbl">Marks</div><div class="val" id="ur-cur-marks">—</div></div>
+              <div class="fs-item"><div class="lbl">Grade</div><div class="val" id="ur-cur-grade">—</div></div>
+              <div class="fs-item"><div class="lbl">Status</div><div class="val" id="ur-cur-status">—</div></div>
             </div>
           </div>
-          <div id="ur-found" style="display:none;background:var(--g-pale);border:1.5px solid var(--g-light);border-radius:10px;padding:14px 16px;margin-bottom:16px;">
-            <p style="font-size:.75rem;font-weight:700;color:var(--g-dark);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Current Record Found</p>
-            <div style="display:flex;gap:20px;flex-wrap:wrap">
-              <div><div style="font-size:.68rem;color:var(--tl);font-weight:700;text-transform:uppercase">Marks</div><div style="font-weight:900;font-size:1.1rem" id="ur-cur-marks">—</div></div>
-              <div><div style="font-size:.68rem;color:var(--tl);font-weight:700;text-transform:uppercase">Grade</div><div style="font-weight:900;font-size:1.1rem" id="ur-cur-grade">—</div></div>
-              <div><div style="font-size:.68rem;color:var(--tl);font-weight:700;text-transform:uppercase">Status</div><div style="font-weight:900;font-size:1.1rem" id="ur-cur-status">—</div></div>
-            </div>
-          </div>
-          <div id="ur-notfound" style="display:none;background:#fff6d4;border:1px solid #f5d87e;border-radius:9px;padding:10px 14px;font-size:.83rem;color:#856200;margin-bottom:14px">
-            No matching result found. Use "Enter Result" to add a new one.
-          </div>
-          <div class="form-group">
-            <label>New Marks (0–100)</label>
-            <input type="number" id="ur-marks" placeholder="Enter updated marks" min="0" max="100"/>
-          </div>
-          <button class="btn btn-green" id="ur-btn" onclick="updateResult()">Update Result</button>
+          <div class="notfound-box" id="ur-notfound">No matching result found. Use "Enter Result" to add a new one.</div>
+
+          <div class="form-group"><label>New Marks (0–100)</label><input type="number" id="ur-marks" placeholder="Enter updated marks" min="0" max="100"/></div>
+          <button class="btn btn-green" id="ur-btn" onclick="updateResult()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.24"/></svg>
+            Update Result
+          </button>
         </div>
       </div>
 
@@ -452,10 +464,13 @@
 <!-- CONFIRM DELETE -->
 <div class="overlay" id="confirm-overlay">
   <div class="modal-box">
-    <div class="mh"><h3>Confirm Delete</h3><button class="x-btn" onclick="closeConfirm()">✕</button></div>
-    <div class="mb" id="confirm-msg"></div>
+    <div class="mh">
+      <h3>Confirm Delete</h3>
+      <button class="x-btn" onclick="closeOverlay('confirm-overlay')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="mb"><p style="color:var(--tm);line-height:1.6;font-size:.9rem" id="confirm-msg"></p></div>
     <div class="mf">
-      <button class="btn btn-outline btn-sm" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-outline btn-sm" onclick="closeOverlay('confirm-overlay')">Cancel</button>
       <button class="btn btn-danger btn-sm" id="confirm-ok">Delete</button>
     </div>
   </div>
@@ -467,12 +482,12 @@
   let _dept = null, _faculty = null, _students = [], _results = [], _pendingDel = null;
 
   const PAGE_META = {
-    'dashboard':     { title:'Dashboard',        sub:'Your department overview' },
-    'students':      { title:'Our Students',      sub:'Students in your department' },
-    'add-student':   { title:'Add Student',       sub:'Enrol a student in your department' },
-    'results':       { title:'Our Results',       sub:'All results for your department' },
-    'add-result':    { title:'Enter Result',      sub:'Post a new student result' },
-    'update-result': { title:'Update Result',     sub:'Update an existing result' },
+    'dashboard':     { title:'Dashboard',       sub:'Your department overview' },
+    'students':      { title:'Our Students',     sub:'Students enrolled in your department' },
+    'add-student':   { title:'Add Student',      sub:'Enrol a student in your department' },
+    'results':       { title:'Our Results',      sub:'All results for your department' },
+    'add-result':    { title:'Enter Result',     sub:'Post a new student result' },
+    'update-result': { title:'Update Result',    sub:'Update an existing result' },
   };
 
   /* ── LOGIN ── */
@@ -485,26 +500,19 @@
     if (!username || !password) { errEl.textContent = 'Enter username and password.'; errEl.classList.add('show'); return; }
     btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Signing in…';
     try {
-      const res  = await fetch('/.netlify/functions/dept-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
+      const res  = await fetch('/.netlify/functions/dept-login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username,password}) });
       const data = await res.json();
       if (!res.ok || !data.success) { errEl.textContent = data.message || 'Invalid credentials.'; errEl.classList.add('show'); return; }
-
       _dept    = data.department;
       _faculty = data.faculty;
-
       document.getElementById('sb-dept-name').textContent  = _dept;
       document.getElementById('sb-fac-name').textContent   = _faculty;
       document.getElementById('dept-av-name').textContent  = _dept;
-      document.getElementById('dept-av').textContent       = _dept.replace('Department of ', '')[0];
+      document.getElementById('dept-av').textContent       = _dept.replace('Department of ','')[0];
       document.getElementById('banner-dept').textContent   = _dept;
       document.getElementById('banner-fac').textContent    = _faculty + ' · Al-Hikma University, GIU';
       document.getElementById('ns-fac-display').value      = _faculty;
       document.getElementById('ns-dept-display').value     = _dept;
-
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('app').classList.add('show');
       loadDashboard();
@@ -536,13 +544,11 @@
     if (id === 'update-result') resetUpdateForm();
   }
 
-  /* ── API HELPER ── */
+  /* ── API ── */
   async function api(fn, method = 'GET', body = null) {
     let url = '/.netlify/functions/' + fn;
-    if (method === 'GET' && _dept) {
-      url += '?department=' + encodeURIComponent(_dept);
-    }
-    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (method === 'GET' && _dept) url += '?department=' + encodeURIComponent(_dept);
+    const opts = { method, headers: { 'Content-Type':'application/json' } };
     if (body) opts.body = JSON.stringify(body);
     const res  = await fetch(url, opts);
     const data = await res.json();
@@ -562,15 +568,15 @@
       document.getElementById('d-passed').textContent   = passed;
       document.getElementById('d-failed').textContent   = failed;
       const rCount = {};
-      _results.forEach(r => { rCount[r.student_id] = (rCount[r.student_id] || 0) + 1; });
+      _results.forEach(r => { rCount[r.student_id] = (rCount[r.student_id]||0)+1; });
       const recent = _students.slice(0, 6);
       document.getElementById('d-recent').innerHTML = recent.length
         ? recent.map(s => `<tr>
-            <td><code style="background:var(--g-pale);padding:2px 8px;border-radius:5px;font-size:.8rem">${s.student_id}</code></td>
+            <td><code style="background:var(--g-pale);padding:2px 8px;border-radius:5px;font-size:.8rem;font-weight:700">${s.student_id}</code></td>
             <td style="font-weight:700">${s.full_name}</td>
             <td style="color:var(--tl)">${s.email}</td>
             <td><span class="badge badge-green">Year ${s.year}</span></td>
-            <td><span class="badge badge-blue">${rCount[s.student_id] || 0} result(s)</span></td>
+            <td><span class="badge badge-blue">${rCount[s.student_id]||0} result(s)</span></td>
           </tr>`).join('')
         : '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--tl)">No students yet.</td></tr>';
     } catch (e) { toast('Failed to load dashboard.', true); }
@@ -583,7 +589,7 @@
       const { data } = await api('dept-get-students');
       _students = data.students || [];
       const rCount = {};
-      _results.forEach(r => { rCount[r.student_id] = (rCount[r.student_id] || 0) + 1; });
+      _results.forEach(r => { rCount[r.student_id] = (rCount[r.student_id]||0)+1; });
       renderStudents(_students, rCount);
     } catch (e) { toast('Failed to load students.', true); }
   }
@@ -592,11 +598,11 @@
     const tb = document.getElementById('s-body');
     if (!list.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="5">No students yet.</td></tr>'; return; }
     tb.innerHTML = list.map(s => `<tr>
-      <td><code style="background:var(--g-pale);padding:2px 8px;border-radius:5px;font-size:.8rem">${s.student_id}</code></td>
+      <td><code style="background:var(--g-pale);padding:2px 8px;border-radius:5px;font-size:.8rem;font-weight:700">${s.student_id}</code></td>
       <td style="font-weight:700">${s.full_name}</td>
       <td style="color:var(--tl)">${s.email}</td>
       <td><span class="badge badge-green">Year ${s.year}</span></td>
-      <td><span class="badge badge-blue">${rCount[s.student_id] || 0} result(s)</span></td>
+      <td><span class="badge badge-blue">${rCount[s.student_id]||0} result(s)</span></td>
     </tr>`).join('');
   }
 
@@ -604,7 +610,7 @@
     const q = document.getElementById('s-search').value.toLowerCase();
     const y = document.getElementById('s-year').value;
     const rCount = {};
-    _results.forEach(r => { rCount[r.student_id] = (rCount[r.student_id] || 0) + 1; });
+    _results.forEach(r => { rCount[r.student_id] = (rCount[r.student_id]||0)+1; });
     renderStudents(_students.filter(s =>
       (!q || s.full_name.toLowerCase().includes(q) || s.student_id.toLowerCase().includes(q) || s.email.toLowerCase().includes(q)) &&
       (!y || String(s.year) === y)
@@ -612,26 +618,23 @@
   }
 
   async function addStudent() {
-    const id    = document.getElementById('ns-id').value.trim();
-    const name  = document.getElementById('ns-name').value.trim();
-    const email = document.getElementById('ns-email').value.trim();
-    const year  = document.getElementById('ns-year').value;
-    const pw    = document.getElementById('ns-pw').value;
-    if (!id || !name || !email || !year || !pw) { toast('Please fill in all fields.', true); return; }
+    const id   = document.getElementById('ns-id').value.trim();
+    const name = document.getElementById('ns-name').value.trim();
+    const email= document.getElementById('ns-email').value.trim();
+    const year = document.getElementById('ns-year').value;
+    const pw   = document.getElementById('ns-pw').value;
+    if (!id||!name||!email||!year||!pw) { toast('Please fill in all fields.', true); return; }
     const btn = document.getElementById('ns-btn');
     btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Adding…';
     try {
-      const { ok, data } = await api('dept-add-student', 'POST', {
-        student_id: id, full_name: name, email, year: parseInt(year),
-        password: pw, faculty: _faculty, department: _dept,
-      });
+      const { ok, data } = await api('dept-add-student','POST',{ student_id:id, full_name:name, email, year:parseInt(year), password:pw, faculty:_faculty, department:_dept });
       if (ok && data.success) {
         toast('Student added to your department!');
         ['ns-id','ns-name','ns-email','ns-pw'].forEach(i => document.getElementById(i).value = '');
         document.getElementById('ns-year').value = '';
-      } else { toast(data.message || 'Failed to add student.', true); }
-    } catch (e) { toast('Error adding student.', true); }
-    finally { btn.disabled = false; btn.textContent = 'Add Student'; }
+      } else toast(data.message||'Failed to add student.', true);
+    } catch(e) { toast('Error adding student.', true); }
+    finally { btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Student'; }
   }
 
   /* ── RESULTS ── */
@@ -641,24 +644,26 @@
       const { data } = await api('dept-get-results');
       _results = data.results || [];
       renderResults(_results);
-    } catch (e) { toast('Failed to load results.', true); }
+    } catch(e) { toast('Failed to load results.', true); }
   }
 
   function renderResults(list) {
     const tb = document.getElementById('r-body');
     if (!list.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="8">No results posted yet.</td></tr>'; return; }
     tb.innerHTML = list.map(r => {
-      const gc   = r.grade?.[0] === 'A' ? 'badge-green' : r.grade?.[0] === 'B' ? 'badge-blue' : r.grade?.[0] === 'C' ? 'badge-warn' : r.grade?.[0] === 'F' ? 'badge-red' : 'badge-gray';
-      const pass = Number(r.marks) >= 50;
+      const gc   = r.grade?.[0]==='A'?'badge-green':r.grade?.[0]==='B'?'badge-blue':r.grade?.[0]==='C'?'badge-warn':r.grade?.[0]==='F'?'badge-red':'badge-gray';
+      const pass = Number(r.marks)>=50;
       return `<tr>
-        <td><code style="background:var(--g-pale);padding:2px 8px;border-radius:5px;font-size:.8rem">${r.student_id}</code></td>
+        <td><code style="background:var(--g-pale);padding:2px 8px;border-radius:5px;font-size:.8rem;font-weight:700">${r.student_id}</code></td>
         <td style="font-weight:700">${r.subject_name}</td>
-        <td>Year ${r.year}</td>
-        <td>Sem ${r.semester}</td>
+        <td>Year ${r.year}</td><td>Sem ${r.semester}</td>
         <td><strong>${r.marks}</strong>/100</td>
         <td><span class="badge ${gc}">${r.grade}</span></td>
         <td style="font-weight:700;color:${pass?'#006b2d':'#b30000'}">${pass?'✓ Pass':'✗ Fail'}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="confirmDel(${r.id},'${r.subject_name} — ${r.student_id}')">Delete</button></td>
+        <td><button class="btn btn-danger btn-sm" onclick="confirmDel(${r.id},'${r.subject_name} — ${r.student_id}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+          Delete
+        </button></td>
       </tr>`;
     }).join('');
   }
@@ -669,133 +674,107 @@
     const s = document.getElementById('r-sem').value;
     renderResults(_results.filter(r =>
       (!q || r.student_id.toLowerCase().includes(q)) &&
-      (!y || String(r.year) === y) &&
-      (!s || String(r.semester) === s)
+      (!y || String(r.year)===y) &&
+      (!s || String(r.semester)===s)
     ));
   }
 
   async function enterResult() {
-    const sid     = document.getElementById('nr-sid').value.trim();
-    const subject = document.getElementById('nr-subject').value.trim();
-    const year    = document.getElementById('nr-year').value;
-    const sem     = document.getElementById('nr-sem').value;
-    const marks   = parseInt(document.getElementById('nr-marks').value);
-    const credits = parseInt(document.getElementById('nr-credits').value);
-    if (!sid || !subject || !year || !sem || isNaN(marks) || isNaN(credits)) { toast('Please fill in all fields.', true); return; }
-    if (marks < 0 || marks > 100) { toast('Marks must be 0–100.', true); return; }
-    const student = _students.find(s => s.student_id === sid);
+    const sid=document.getElementById('nr-sid').value.trim(), subject=document.getElementById('nr-subject').value.trim();
+    const year=document.getElementById('nr-year').value, sem=document.getElementById('nr-sem').value;
+    const marks=parseInt(document.getElementById('nr-marks').value), credits=parseInt(document.getElementById('nr-credits').value);
+    if (!sid||!subject||isNaN(marks)||isNaN(credits)) { toast('Please fill in all fields.', true); return; }
+    if (marks<0||marks>100) { toast('Marks must be 0–100.', true); return; }
+    const student = _students.find(s => s.student_id===sid);
     if (!student) { toast('Student not found in your department. Add them first.', true); return; }
     const btn = document.getElementById('nr-btn');
-    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving…';
+    btn.disabled=true; btn.innerHTML='<span class="spin"></span>Saving…';
     try {
-      const { ok, data } = await api('add-marks', 'POST', {
-        student_id: sid, subject_name: subject,
-        year: parseInt(year), semester: parseInt(sem), marks, credit_hours: credits,
-      });
-      if (ok && data.success) {
-        toast('Result saved! Grade: ' + data.grade);
-        ['nr-sid','nr-subject','nr-marks'].forEach(i => document.getElementById(i).value = '');
-        document.getElementById('nr-credits').value = '3';
-        _results = [];
-      } else { toast(data.message || 'Failed to save result.', true); }
-    } catch (e) { toast('Error saving result.', true); }
-    finally { btn.disabled = false; btn.textContent = 'Save Result'; }
+      const { ok, data } = await api('add-marks','POST',{ student_id:sid, subject_name:subject, year:parseInt(year), semester:parseInt(sem), marks, credit_hours:credits });
+      if (ok&&data.success) {
+        toast('Result saved! Grade: '+data.grade);
+        ['nr-sid','nr-subject','nr-marks'].forEach(i=>document.getElementById(i).value='');
+        document.getElementById('nr-credits').value='3';
+        _results=[];
+      } else toast(data.message||'Failed to save result.', true);
+    } catch(e) { toast('Error saving result.', true); }
+    finally { btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Result'; }
   }
 
   /* ── UPDATE RESULT ── */
   function resetUpdateForm() {
-    ['ur-sid','ur-subject','ur-marks'].forEach(i => document.getElementById(i).value = '');
-    document.getElementById('ur-year').value = '1';
-    document.getElementById('ur-sem').value  = '1';
-    document.getElementById('ur-found').style.display    = 'none';
-    document.getElementById('ur-notfound').style.display = 'none';
+    ['ur-sid','ur-subject','ur-marks'].forEach(i=>document.getElementById(i).value='');
+    document.getElementById('ur-year').value='1';
+    document.getElementById('ur-sem').value='1';
+    document.getElementById('ur-found').classList.remove('show');
+    document.getElementById('ur-notfound').classList.remove('show');
   }
 
   function searchResultForUpdate() {
-    const sid     = document.getElementById('ur-sid').value.trim();
-    const subject = document.getElementById('ur-subject').value.trim();
-    const year    = document.getElementById('ur-year').value;
-    const sem     = document.getElementById('ur-sem').value;
-    if (!sid || !subject) {
-      document.getElementById('ur-found').style.display    = 'none';
-      document.getElementById('ur-notfound').style.display = 'none';
-      return;
-    }
-    const found = _results.find(r =>
-      r.student_id === sid &&
-      r.subject_name.toLowerCase() === subject.toLowerCase() &&
-      String(r.year) === year && String(r.semester) === sem
-    );
+    const sid=document.getElementById('ur-sid').value.trim(), subject=document.getElementById('ur-subject').value.trim();
+    const year=document.getElementById('ur-year').value, sem=document.getElementById('ur-sem').value;
+    if (!sid||!subject) { document.getElementById('ur-found').classList.remove('show'); document.getElementById('ur-notfound').classList.remove('show'); return; }
+    const found = _results.find(r => r.student_id===sid && r.subject_name.toLowerCase()===subject.toLowerCase() && String(r.year)===year && String(r.semester)===sem);
     if (found) {
-      document.getElementById('ur-found').style.display    = 'block';
-      document.getElementById('ur-notfound').style.display = 'none';
-      document.getElementById('ur-cur-marks').textContent  = found.marks + '/100';
+      document.getElementById('ur-found').classList.add('show');
+      document.getElementById('ur-notfound').classList.remove('show');
+      document.getElementById('ur-cur-marks').textContent  = found.marks+'/100';
       document.getElementById('ur-cur-grade').textContent  = found.grade;
-      document.getElementById('ur-cur-status').textContent = Number(found.marks) >= 50 ? '✓ Pass' : '✗ Fail';
+      document.getElementById('ur-cur-status').textContent = Number(found.marks)>=50?'✓ Pass':'✗ Fail';
     } else {
-      document.getElementById('ur-found').style.display    = 'none';
-      document.getElementById('ur-notfound').style.display = 'block';
+      document.getElementById('ur-found').classList.remove('show');
+      document.getElementById('ur-notfound').classList.add('show');
     }
   }
 
   async function updateResult() {
-    const sid     = document.getElementById('ur-sid').value.trim();
-    const subject = document.getElementById('ur-subject').value.trim();
-    const year    = document.getElementById('ur-year').value;
-    const sem     = document.getElementById('ur-sem').value;
-    const marks   = parseInt(document.getElementById('ur-marks').value);
-    if (!sid || !subject || isNaN(marks)) { toast('Please fill in all fields.', true); return; }
-    if (marks < 0 || marks > 100) { toast('Marks must be 0–100.', true); return; }
-    const student = _students.find(s => s.student_id === sid);
+    const sid=document.getElementById('ur-sid').value.trim(), subject=document.getElementById('ur-subject').value.trim();
+    const year=document.getElementById('ur-year').value, sem=document.getElementById('ur-sem').value;
+    const marks=parseInt(document.getElementById('ur-marks').value);
+    if (!sid||!subject||isNaN(marks)) { toast('Please fill in all fields.', true); return; }
+    if (marks<0||marks>100) { toast('Marks must be 0–100.', true); return; }
+    const student = _students.find(s=>s.student_id===sid);
     if (!student) { toast('Student not found in your department.', true); return; }
     const btn = document.getElementById('ur-btn');
-    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Updating…';
+    btn.disabled=true; btn.innerHTML='<span class="spin"></span>Updating…';
     try {
-      const { ok, data } = await api('add-marks', 'POST', {
-        student_id: sid, subject_name: subject,
-        year: parseInt(year), semester: parseInt(sem), marks, credit_hours: 3,
-      });
-      if (ok && data.success) {
-        toast('Result updated! New grade: ' + data.grade);
-        resetUpdateForm(); _results = [];
-      } else { toast(data.message || 'Failed to update.', true); }
-    } catch (e) { toast('Error updating result.', true); }
-    finally { btn.disabled = false; btn.textContent = 'Update Result'; }
+      const { ok, data } = await api('add-marks','POST',{ student_id:sid, subject_name:subject, year:parseInt(year), semester:parseInt(sem), marks, credit_hours:3 });
+      if (ok&&data.success) { toast('Result updated! New grade: '+data.grade); resetUpdateForm(); _results=[]; }
+      else toast(data.message||'Failed to update.', true);
+    } catch(e) { toast('Error updating result.', true); }
+    finally { btn.disabled=false; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.24"/></svg> Update Result'; }
   }
 
   /* ── DELETE ── */
   function confirmDel(id, label) {
     _pendingDel = id;
-    document.getElementById('confirm-msg').textContent = 'Delete result for "' + label + '"? This cannot be undone.';
+    document.getElementById('confirm-msg').textContent = 'Delete result for "'+label+'"? This cannot be undone.';
     document.getElementById('confirm-overlay').classList.add('open');
     document.getElementById('confirm-ok').onclick = executeDel;
   }
 
-  function closeConfirm() {
-    document.getElementById('confirm-overlay').classList.remove('open');
-    _pendingDel = null;
-  }
+  function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
 
   async function executeDel() {
-    closeConfirm();
+    closeOverlay('confirm-overlay');
     if (!_pendingDel) return;
     try {
-      const { ok, data } = await api('delete-results', 'DELETE', { id: _pendingDel });
-      if (ok && data.success) { toast('Result deleted.'); loadResults(); }
-      else toast(data.message || 'Delete failed.', true);
-    } catch (e) { toast('Error deleting.', true); }
+      const { ok, data } = await api('delete-results','DELETE',{ id: _pendingDel });
+      if (ok&&data.success) { toast('Result deleted.'); loadResults(); }
+      else toast(data.message||'Delete failed.', true);
+    } catch(e) { toast('Error deleting.', true); }
   }
 
   /* ── HELPERS ── */
-  function toast(msg, isErr = false) {
+  function toast(msg, isErr=false) {
     const t = document.getElementById('toast');
     t.textContent = msg;
-    t.className = 'show' + (isErr ? ' error' : '');
-    setTimeout(() => { t.className = ''; }, 3500);
+    t.className = 'show'+(isErr?' error':'');
+    setTimeout(()=>{ t.className=''; }, 3500);
   }
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !document.getElementById('login-screen').classList.contains('hidden')) doLogin();
+    if (e.key==='Enter' && !document.getElementById('login-screen').classList.contains('hidden')) doLogin();
   });
 </script>
 </body>
