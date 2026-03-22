@@ -1,5 +1,4 @@
 import { neon } from '@neondatabase/serverless';
-import bcrypt from 'bcryptjs';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -24,17 +23,36 @@ export const handler = async (event) => {
 
   try {
     const sql      = neon(process.env.DATABASE_URL);
-    const existing = await sql`SELECT id FROM students WHERE student_id = ${student_id} OR email = ${email}`;
-    if (existing.length) return { statusCode: 409, headers: CORS, body: JSON.stringify({ success: false, message: 'Student ID or email already exists' }) };
-
-    const hash = await bcrypt.hash(password, 10);
-    await sql`
-      INSERT INTO students (student_id, email, full_name, faculty, department, year, password_hash)
-      VALUES (${student_id}, ${email.toLowerCase()}, ${full_name}, ${faculty}, ${department}, ${year}, ${hash})
+    const existing = await sql`
+      SELECT id FROM students
+      WHERE student_id = ${student_id} OR email = ${email}
     `;
 
-    return { statusCode: 201, headers: CORS, body: JSON.stringify({ success: true, message: 'Student added to your department' }) };
+    if (existing.length)
+      return { statusCode: 409, headers: CORS, body: JSON.stringify({ success: false, message: 'Student ID or email already exists' }) };
+
+    // Faculty and department come from the request body (sent by dept portal from JWT/session)
+    // Department staff cannot override these — they are locked to their own dept on the frontend
+    await sql`
+      INSERT INTO students (student_id, email, full_name, faculty, department, year, password_hash)
+      VALUES (
+        ${student_id},
+        ${email.toLowerCase()},
+        ${full_name},
+        ${faculty},
+        ${department},
+        ${year},
+        ${password}
+      )
+    `;
+
+    return {
+      statusCode: 201,
+      headers: CORS,
+      body: JSON.stringify({ success: true, message: 'Student added to your department' }),
+    };
   } catch (e) {
+    console.error('[dept-add-student]', e.message);
     return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Server error: ' + e.message }) };
   }
 };
