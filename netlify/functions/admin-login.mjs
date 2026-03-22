@@ -23,7 +23,7 @@ export const handler = async (event) => {
 
   try {
     const sql  = neon(process.env.DATABASE_URL);
-    const rows = await sql`SELECT * FROM dept_accounts WHERE username = ${username} AND password = ${password} LIMIT 1`;
+    const rows = await sql`SELECT * FROM admins WHERE username = ${username} AND password = ${password} LIMIT 1`;
 
     if (!rows.length)
       return { statusCode: 401, headers: CORS, body: JSON.stringify({ success: false, message: 'Invalid credentials' }) };
@@ -33,11 +33,11 @@ export const handler = async (event) => {
     return {
       statusCode: 200,
       headers: CORS,
-      body: JSON.stringify({ success: true, token, department: rows[0].department, faculty: rows[0].faculty, username: rows[0].username }),
+      body: JSON.stringify({ success: true, token, admin: { username: rows[0].username } }),
     };
 
   } catch (e) {
-    console.error('[dept-login]', e.message);
+    console.error('[admin-login]', e.message);
     return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Server error: ' + e.message }) };
   }
 };
