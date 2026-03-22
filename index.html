@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Al-Hikma University – Student Results Portal</title>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito+Sans:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <style>
     :root {
       --g-dark:  #00793a;
@@ -296,7 +298,7 @@
         <div class="err-box" id="err-box"><span>⚠</span><span id="err-msg"></span></div>
       </div>
       <div class="lc-foot">
-        Forgot your password? Contact the <a href="mailto:info@giu.gm">GIU Registrar</a>
+        Forgot your password? Contact the <a href="/cdn-cgi/l/email-protection#670e09010827000e1249000a">GIU Registrar</a>
       </div>
     </div>
   </div>
@@ -308,7 +310,16 @@
         <h2 id="res-name"></h2>
         <p id="res-sub"></p>
       </div>
-      <button class="btn-logout" onclick="doLogout()">⬅ Sign Out</button>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <button onclick="exportPDF()" style="display:inline-flex;align-items:center;gap:7px;padding:9px 18px;background:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;color:var(--g-dark);font-family:'Nunito Sans',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s" onmouseover="this.style.background='var(--g-pale)'" onmouseout="this.style.background='#fff'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export PDF
+        </button>
+        <button class="btn-logout" onclick="doLogout()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign Out
+        </button>
+      </div>
     </div>
 
     <div class="info-strip" id="info-strip"></div>
@@ -324,7 +335,7 @@
   Al-Hikma University &nbsp;|&nbsp; Tallinding Kunjang, The Gambia
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   /* ═══════════════════════════════════════════
      GIU Student Portal – Frontend Logic
      Fetches from /.netlify/functions/student-login
@@ -548,6 +559,214 @@
     clearErr();
   }
 
+  /* ══════════════════════════════════════
+     EXPORT PDF — Official Transcript
+  ══════════════════════════════════════ */
+  function exportPDF() {
+    var s   = _student;
+    var doc = new window.jspdf.jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+    var W   = doc.internal.pageSize.getWidth();
+    var H   = doc.internal.pageSize.getHeight();
+    var y   = 0;
+
+    /* ── HEADER BANNER ── */
+    doc.setFillColor(0, 121, 58);
+    doc.rect(0, 0, W, 42, 'F');
+
+    /* GIU title */
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.text('Gambia Islamic Union (GIU)', W / 2, 13, { align:'center' });
+
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Al-Hikma University — Official Academic Transcript', W / 2, 21, { align:'center' });
+
+    doc.setFontSize(9);
+    doc.text('Tallinding Kunjang, The Gambia  |  www.giu.gm', W / 2, 28, { align:'center' });
+
+    /* Transcript label badge */
+    doc.setFillColor(255, 255, 255, 0.15);
+    doc.setDrawColor(255, 255, 255);
+    doc.roundedRect(W/2 - 28, 32, 56, 8, 2, 2, 'S');
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(255, 255, 255);
+    doc.text('STUDENT ACADEMIC TRANSCRIPT', W / 2, 37.2, { align:'center' });
+
+    y = 50;
+
+    /* ── STUDENT INFO BOX ── */
+    doc.setFillColor(240, 250, 244);
+    doc.setDrawColor(212, 232, 220);
+    doc.roundedRect(14, y, W - 28, 36, 3, 3, 'FD');
+
+    doc.setTextColor(61, 90, 72);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+
+    var col1x = 20, col2x = W / 2 + 6;
+    var infoY  = y + 8;
+    var lineH  = 7;
+
+    function infoRow(label, value, x, iy) {
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(107, 143, 121);
+      doc.setFontSize(7.5);
+      doc.text(label.toUpperCase(), x, iy);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(26, 46, 34);
+      doc.setFontSize(9);
+      doc.text(String(value || '—'), x, iy + 4);
+    }
+
+    infoRow('Student ID',  s.student_id,  col1x, infoY);
+    infoRow('Full Name',   s.full_name,   col2x, infoY);
+    infoRow('Faculty',     s.faculty,     col1x, infoY + lineH * 2);
+    infoRow('Department',  s.department,  col2x, infoY + lineH * 2);
+    infoRow('Year',        'Year ' + s.year, col1x, infoY + lineH * 4);
+    infoRow('Cumulative GPA', (s.cgpa || '—') + ' / 4.0', col2x, infoY + lineH * 4);
+
+    y += 44;
+
+    /* ── RESULTS BY YEAR ── */
+    var years = [];
+    _results.forEach(function(r) { if (years.indexOf(+r.year) === -1) years.push(+r.year); });
+    years.sort();
+
+    if (!years.length) years = [+s.year];
+
+    years.forEach(function(yr) {
+      var yRows = _results.filter(function(r) { return +r.year === yr; });
+      if (!yRows.length) return;
+
+      /* Year heading */
+      y += 6;
+      if (y > H - 40) { doc.addPage(); y = 18; }
+
+      doc.setFillColor(0, 121, 58);
+      doc.roundedRect(14, y, W - 28, 8, 2, 2, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.setTextColor(255, 255, 255);
+      doc.text('Year ' + yr, 20, y + 5.5);
+      y += 12;
+
+      [1, 2].forEach(function(sem) {
+        var rows = yRows.filter(function(r) { return +r.semester === sem; });
+        if (!rows.length) return;
+
+        if (y > H - 50) { doc.addPage(); y = 18; }
+
+        /* Semester label */
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(0, 121, 58);
+        doc.text('Semester ' + sem, 18, y);
+        y += 4;
+
+        /* Table */
+        var tableData = rows.map(function(r) {
+          var pass = +r.marks >= 50;
+          return [
+            r.subject_name,
+            r.credit_hours + ' hrs',
+            r.marks + '/100',
+            r.grade,
+            pass ? 'Pass' : 'Fail',
+          ];
+        });
+
+        doc.autoTable({
+          startY: y,
+          head: [['Subject', 'Credit Hrs', 'Marks', 'Grade', 'Status']],
+          body: tableData,
+          theme: 'grid',
+          margin: { left: 14, right: 14 },
+          headStyles: {
+            fillColor: [196, 242, 212],
+            textColor: [0, 79, 36],
+            fontStyle: 'bold',
+            fontSize: 8,
+          },
+          bodyStyles: { fontSize: 8.5, textColor: [26, 46, 34] },
+          alternateRowStyles: { fillColor: [247, 253, 250] },
+          columnStyles: {
+            0: { cellWidth: 'auto' },
+            1: { cellWidth: 22, halign:'center' },
+            2: { cellWidth: 22, halign:'center' },
+            3: { cellWidth: 18, halign:'center', fontStyle:'bold' },
+            4: { cellWidth: 18, halign:'center' },
+          },
+          didParseCell: function(data) {
+            if (data.section === 'body' && data.column.index === 4) {
+              data.cell.styles.textColor = data.cell.raw === 'Pass' ? [0, 107, 45] : [179, 0, 0];
+              data.cell.styles.fontStyle = 'bold';
+            }
+            if (data.section === 'body' && data.column.index === 3) {
+              var g = data.cell.raw;
+              data.cell.styles.textColor = g && g[0]==='A' ? [0,107,45] : g && g[0]==='B' ? [0,85,165] : g && g[0]==='F' ? [179,0,0] : [26,46,34];
+            }
+          },
+        });
+
+        y = doc.lastAutoTable.finalY + 3;
+
+        /* Semester GPA footer */
+        var pts = 0, hrs = 0;
+        rows.forEach(function(r) { pts += gradePoint(r.grade) * +r.credit_hours; hrs += +r.credit_hours; });
+        var semGpa = hrs ? (pts / hrs).toFixed(2) : '0.00';
+        var allPass = rows.every(function(r) { return +r.marks >= 50; });
+
+        doc.setFillColor(240, 250, 244);
+        doc.setDrawColor(212, 232, 220);
+        doc.rect(14, y, W - 28, 9, 'FD');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(61, 90, 72);
+        doc.text('Semester GPA: ' + semGpa + ' / 4.0', 20, y + 5.8);
+        doc.text('Total Credit Hours: ' + hrs, 80, y + 5.8);
+        doc.setTextColor(allPass ? [0,107,45] : [179,0,0]);
+        doc.setFont('helvetica', 'bold');
+        doc.text(allPass ? '✓ All Passed' : '⚠ Review Required', W - 48, y + 5.8);
+        y += 12;
+      });
+    });
+
+    /* ── CGPA SUMMARY BOX ── */
+    if (y > H - 35) { doc.addPage(); y = 18; }
+    y += 4;
+    doc.setFillColor(0, 121, 58);
+    doc.roundedRect(14, y, W - 28, 18, 3, 3, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(255, 255, 255);
+    doc.text('Cumulative GPA (CGPA):  ' + (s.cgpa || '—') + ' / 4.0', W / 2, y + 7, { align:'center' });
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Total subjects recorded: ' + _results.length + '   |   Passed: ' + _results.filter(function(r){return +r.marks>=50}).length + '   |   Failed: ' + _results.filter(function(r){return +r.marks<50}).length, W / 2, y + 13, { align:'center' });
+    y += 24;
+
+    /* ── FOOTER ── */
+    var totalPages = doc.internal.getNumberOfPages();
+    for (var p = 1; p <= totalPages; p++) {
+      doc.setPage(p);
+      doc.setFillColor(240, 250, 244);
+      doc.rect(0, H - 14, W, 14, 'F');
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(107, 143, 121);
+      doc.text('Generated by GIU Al-Hikma University Student Portal  |  ' + new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'long',year:'numeric'}), W / 2, H - 8, { align:'center' });
+      doc.text('Page ' + p + ' of ' + totalPages, W - 16, H - 8, { align:'right' });
+      doc.text('OFFICIAL DOCUMENT', 16, H - 8);
+    }
+
+    /* ── SAVE ── */
+    var filename = 'Transcript_' + s.student_id + '_' + s.full_name.replace(/\s+/g, '_') + '.pdf';
+    doc.save(filename);
+  }
+
   /* ── Grade helpers ── */
   function gradeClass(g) {
     if (!g) return 'gf';
@@ -560,10 +779,4 @@
 
   /* ── Enter key triggers login ── */
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && document.getElementById('screen-login').style.display !== 'none') {
-      doLogin();
-    }
-  });
-</script>
-</body>
-</html>
+    if (e.
