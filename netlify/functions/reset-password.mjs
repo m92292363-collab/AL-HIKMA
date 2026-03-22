@@ -1,5 +1,4 @@
 import { neon } from '@neondatabase/serverless';
-import bcrypt from 'bcryptjs';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -25,13 +24,14 @@ export const handler = async (event) => {
   try {
     const sql      = neon(process.env.DATABASE_URL);
     const existing = await sql`SELECT id FROM students WHERE student_id = ${student_id}`;
-    if (!existing.length) return { statusCode: 404, headers: CORS, body: JSON.stringify({ success: false, message: 'Student not found' }) };
+    if (!existing.length)
+      return { statusCode: 404, headers: CORS, body: JSON.stringify({ success: false, message: 'Student not found' }) };
 
-    const hash = await bcrypt.hash(new_password, 10);
-    await sql`UPDATE students SET password_hash = ${hash} WHERE student_id = ${student_id}`;
+    await sql`UPDATE students SET password_hash = ${new_password} WHERE student_id = ${student_id}`;
 
     return { statusCode: 200, headers: CORS, body: JSON.stringify({ success: true, message: 'Password reset successfully' }) };
   } catch (e) {
+    console.error('[reset-password]', e.message);
     return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Server error: ' + e.message }) };
   }
 };
