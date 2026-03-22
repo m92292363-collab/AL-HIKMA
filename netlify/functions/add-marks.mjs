@@ -1,5 +1,4 @@
 import { neon } from '@neondatabase/serverless';
-import jwt from 'jsonwebtoken';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -22,18 +21,9 @@ function gradeFromMarks(marks) {
   return 'F';
 }
 
-function verifyAdmin(event) {
-  const auth = event.headers['authorization'] || event.headers['Authorization'] || '';
-  const token = auth.replace('Bearer ', '');
-  if (!token) throw new Error('Unauthorized');
-  return jwt.verify(token, process.env.JWT_SECRET);
-}
-
 export const handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
   if (event.httpMethod !== 'POST') return { statusCode: 405, headers: CORS, body: JSON.stringify({ success: false, message: 'Method not allowed' }) };
-
-  try { verifyAdmin(event); } catch { return { statusCode: 401, headers: CORS, body: JSON.stringify({ success: false, message: 'Unauthorized' }) }; }
 
   let student_id, subject_name, year, semester, marks, credit_hours;
   try {
@@ -49,7 +39,7 @@ export const handler = async (event) => {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ success: false, message: 'Marks must be 0–100' }) };
 
   try {
-    const sql = neon(process.env.DATABASE_URL);
+    const sql     = neon(process.env.DATABASE_URL);
     const student = await sql`SELECT id FROM students WHERE student_id = ${student_id}`;
     if (!student.length) return { statusCode: 404, headers: CORS, body: JSON.stringify({ success: false, message: 'Student not found' }) };
 
@@ -63,7 +53,6 @@ export const handler = async (event) => {
 
     return { statusCode: 200, headers: CORS, body: JSON.stringify({ success: true, message: 'Result saved', grade }) };
   } catch (e) {
-    console.error('[add-marks]', e.message);
-    return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Server error' }) };
+    return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Server error: ' + e.message }) };
   }
 };
