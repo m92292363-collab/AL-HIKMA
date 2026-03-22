@@ -1,6 +1,4 @@
 import { neon } from '@neondatabase/serverless';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -20,20 +18,26 @@ export const handler = async (event) => {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ success: false, message: 'Invalid request body' }) };
   }
 
-  if (!username || !password) return { statusCode: 400, headers: CORS, body: JSON.stringify({ success: false, message: 'Username and password required' }) };
+  if (!username || !password)
+    return { statusCode: 400, headers: CORS, body: JSON.stringify({ success: false, message: 'Username and password required' }) };
 
   try {
-    const sql = neon(process.env.DATABASE_URL);
-    const rows = await sql`SELECT * FROM admins WHERE username = ${username} LIMIT 1`;
-    if (!rows.length) return { statusCode: 401, headers: CORS, body: JSON.stringify({ success: false, message: 'Invalid credentials' }) };
+    const sql  = neon(process.env.DATABASE_URL);
+    const rows = await sql`SELECT * FROM dept_accounts WHERE username = ${username} AND password = ${password} LIMIT 1`;
 
-    const valid = await bcrypt.compare(password, rows[0].password_hash);
-    if (!valid) return { statusCode: 401, headers: CORS, body: JSON.stringify({ success: false, message: 'Invalid credentials' }) };
+    if (!rows.length)
+      return { statusCode: 401, headers: CORS, body: JSON.stringify({ success: false, message: 'Invalid credentials' }) };
 
-    const token = jwt.sign({ adminId: rows[0].id, username: rows[0].username }, process.env.JWT_SECRET, { expiresIn: '8h' });
-    return { statusCode: 200, headers: CORS, body: JSON.stringify({ success: true, token, admin: { username: rows[0].username } }) };
+    const token = Buffer.from(username + ':' + Date.now()).toString('base64');
+
+    return {
+      statusCode: 200,
+      headers: CORS,
+      body: JSON.stringify({ success: true, token, department: rows[0].department, faculty: rows[0].faculty, username: rows[0].username }),
+    };
+
   } catch (e) {
-    console.error('[admin-login]', e.message);
-    return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Server error' }) };
+    console.error('[dept-login]', e.message);
+    return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Server error: ' + e.message }) };
   }
 };
