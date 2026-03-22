@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GIU Admin Portal – Al-Hikma University</title>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito+Sans:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     :root {
       --g-dark:  #00793a;
@@ -279,11 +280,19 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         Add Result
       </button>
+      <button class="sb-item" onclick="goPage('bulk-results',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        Bulk Results
+      </button>
 
       <div class="sb-section">Tools</div>
       <button class="sb-item" onclick="goPage('reset-pw',this)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         Reset Password
+      </button>
+      <button class="sb-item" onclick="goPage('grading',this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Grading System
       </button>
     </nav>
     <div class="sb-foot">
@@ -483,6 +492,207 @@
         </div>
       </div>
 
+      <!-- ══ BULK RESULTS ══ -->
+      <div class="page" id="page-bulk-results">
+        <div class="form-card" style="max-width:700px">
+          <h4>
+            <span style="display:flex;align-items:center;gap:8px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--g-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+              Bulk Result Entry via Excel
+            </span>
+          </h4>
+
+          <!-- STEP 1 -->
+          <div style="background:var(--g-pale);border:1.5px solid var(--g-light);border-radius:12px;padding:18px 20px;margin-bottom:18px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+              <div style="width:26px;height:26px;background:var(--g-dark);border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;flex-shrink:0">1</div>
+              <span style="font-weight:800;font-size:.92rem">Select Class & Subject</span>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Faculty</label>
+                <select id="br-fac" onchange="brLoadDepts()">
+                  <option value="">Select Faculty</option>
+                  <option>Faculty of Education</option>
+                  <option>Faculty of Arts and Humanity</option>
+                  <option>Faculty of Quran and Islamic Studies</option>
+                  <option>Faculty of Sharia and Law</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Department</label>
+                <select id="br-dept"><option value="">Select Department</option></select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Year</label>
+                <select id="br-year">
+                  <option value="">Select Year</option>
+                  <option value="1">Year 1</option>
+                  <option value="2">Year 2</option>
+                  <option value="3">Year 3</option>
+                  <option value="4">Year 4</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Semester</label>
+                <select id="br-sem">
+                  <option value="">Select Semester</option>
+                  <option value="1">Semester 1</option>
+                  <option value="2">Semester 2</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Subject Name</label>
+                <input type="text" id="br-subject" placeholder="e.g. Fiqh I"/>
+              </div>
+              <div class="form-group">
+                <label>Credit Hours</label>
+                <input type="number" id="br-credits" value="3" min="1" max="6"/>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div style="background:var(--g-pale);border:1.5px solid var(--g-light);border-radius:12px;padding:18px 20px;margin-bottom:18px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+              <div style="width:26px;height:26px;background:var(--g-dark);border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;flex-shrink:0">2</div>
+              <span style="font-weight:800;font-size:.92rem">Download Excel Template</span>
+            </div>
+            <p style="font-size:.83rem;color:var(--tm);margin-bottom:14px">Downloads a pre-filled Excel sheet with all students from the selected class. The teacher fills in the <strong>Marks</strong> column and returns it.</p>
+            <button class="btn btn-green" onclick="downloadTemplate()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Template
+            </button>
+            <span id="br-template-info" style="font-size:.78rem;color:var(--tl);margin-left:12px"></span>
+          </div>
+
+          <!-- STEP 3 -->
+          <div style="background:var(--g-pale);border:1.5px solid var(--g-light);border-radius:12px;padding:18px 20px;margin-bottom:18px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+              <div style="width:26px;height:26px;background:var(--g-dark);border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;flex-shrink:0">3</div>
+              <span style="font-weight:800;font-size:.92rem">Upload Filled Excel</span>
+            </div>
+            <p style="font-size:.83rem;color:var(--tm);margin-bottom:14px">Upload the Excel file after the teacher has filled in the marks. The system will read and preview all entries before saving.</p>
+            <label style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;background:#fff;border:1.5px dashed var(--border);border-radius:10px;padding:14px 22px;transition:border-color .2s;font-weight:700;font-size:.88rem;color:var(--tm)" id="br-upload-label">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Choose Excel File
+              <input type="file" id="br-file" accept=".xlsx,.xls" style="display:none" onchange="previewExcel(this)"/>
+            </label>
+            <span id="br-file-name" style="font-size:.78rem;color:var(--tl);margin-left:10px"></span>
+          </div>
+
+          <!-- PREVIEW TABLE -->
+          <div id="br-preview-wrap" style="display:none;margin-bottom:18px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <span style="font-weight:800;font-size:.92rem" id="br-preview-title">Preview</span>
+              <span class="badge badge-green" id="br-count-badge"></span>
+            </div>
+            <div class="tbl-wrap" style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden">
+              <table class="data-tbl">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Student ID</th>
+                    <th>Full Name</th>
+                    <th>Marks</th>
+                    <th>Grade (auto)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="br-preview-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SUBMIT -->
+          <div id="br-submit-wrap" style="display:none">
+            <button class="btn btn-green" id="br-submit-btn" onclick="submitBulkResults()" style="width:100%;justify-content:center;padding:13px">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Save All Results to Database
+            </button>
+          </div>
+
+          <!-- RESULT BOX -->
+          <div id="br-result-box" style="display:none;margin-top:16px;border-radius:10px;padding:14px 18px;font-size:.88rem;font-weight:700"></div>
+        </div>
+      </div>
+
+      <!-- ══ GRADING SYSTEM ══ -->
+      <div class="page" id="page-grading">
+        <div style="max-width:720px">
+
+          <!-- INFO BANNER -->
+          <div style="background:linear-gradient(135deg,var(--g-dark),var(--g-mid));border-radius:14px;padding:18px 22px;margin-bottom:22px;display:flex;align-items:center;gap:14px">
+            <div style="width:46px;height:46px;background:rgba(255,255,255,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </div>
+            <div>
+              <div style="color:#fff;font-weight:800;font-size:1rem;font-family:'Amiri',serif">Custom Grading Scale</div>
+              <div style="color:rgba(255,255,255,.75);font-size:.8rem;margin-top:3px">Set the minimum mark required for each grade. Changes apply to all future result entries.</div>
+            </div>
+          </div>
+
+          <!-- STATUS BADGE -->
+          <div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+            <span id="grading-status" class="badge badge-gray">Loading…</span>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-outline btn-sm" onclick="resetGradingDefaults()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.24"/></svg>
+                Reset to Default
+              </button>
+              <button class="btn btn-green" id="grading-save-btn" onclick="saveGrading()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Save Grading System
+              </button>
+            </div>
+          </div>
+
+          <!-- GRADING TABLE -->
+          <div class="card">
+            <div class="card-head">
+              <h4>Grade Boundaries</h4>
+              <p style="font-size:.78rem;color:var(--tl)">Edit the Min Marks for each grade. Max is auto-calculated.</p>
+            </div>
+            <div class="tbl-wrap">
+              <table class="data-tbl" id="grading-table">
+                <thead>
+                  <tr>
+                    <th>Grade</th>
+                    <th>Min Marks</th>
+                    <th>Max Marks</th>
+                    <th>Grade Point (GPA)</th>
+                    <th>Pass/Fail</th>
+                  </tr>
+                </thead>
+                <tbody id="grading-body">
+                  <tr><td colspan="5" style="text-align:center;padding:30px;color:var(--tl)">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- PREVIEW -->
+          <div class="card">
+            <div class="card-head"><h4>Live Preview</h4></div>
+            <div style="padding:18px 22px">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+                <label style="font-size:.8rem;font-weight:700;color:var(--tm)">Test a mark:</label>
+                <input type="number" id="grade-preview-input" min="0" max="100" placeholder="e.g. 73"
+                  style="width:100px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Nunito Sans',sans-serif;font-size:.9rem;outline:none"
+                  oninput="previewGrade(this.value)"/>
+                <div id="grade-preview-result" style="font-size:1.1rem;font-weight:900"></div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px" id="grade-chips"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- ══ RESET PASSWORD ══ -->
       <div class="page" id="page-reset-pw">
         <div class="form-card" style="max-width:460px">
@@ -582,6 +792,8 @@
     'dept-detail':   { title:'Department Detail',      sub:'Students in this department' },
     'results':       { title:'All Results',            sub:'View and manage academic results' },
     'add-result':    { title:'Add Result',             sub:'Post or update a student result' },
+    'bulk-results':  { title:'Bulk Result Entry',      sub:'Upload Excel sheet to enter results for a whole class' },
+    'grading':       { title:'Grading System',         sub:'Configure custom grade boundaries and GPA points' },
     'reset-pw':      { title:'Reset Password',         sub:'Change a student login password' },
   };
 
@@ -636,6 +848,7 @@
     if (id === 'students')    loadStudents();
     if (id === 'departments') loadDepartments();
     if (id === 'results')     loadResults();
+    if (id === 'grading')     loadGrading();
   }
 
   /* ══════════════════════════════════════
@@ -995,6 +1208,375 @@
   document.addEventListener('keydown', e => {
     if (e.key==='Enter' && !document.getElementById('login-screen').classList.contains('hidden')) doAdminLogin();
   });
+
+  /* ══════════════════════════════════════
+     GRADING SYSTEM
+  ══════════════════════════════════════ */
+  let _gradingData = [];
+
+  const DEFAULT_GRADING = [
+    { grade:'A+', min_marks:90, max_marks:100, grade_point:4.0 },
+    { grade:'A',  min_marks:85, max_marks:89,  grade_point:4.0 },
+    { grade:'A-', min_marks:80, max_marks:84,  grade_point:3.7 },
+    { grade:'B+', min_marks:75, max_marks:79,  grade_point:3.3 },
+    { grade:'B',  min_marks:70, max_marks:74,  grade_point:3.0 },
+    { grade:'B-', min_marks:65, max_marks:69,  grade_point:2.7 },
+    { grade:'C+', min_marks:60, max_marks:64,  grade_point:2.3 },
+    { grade:'C',  min_marks:55, max_marks:59,  grade_point:2.0 },
+    { grade:'C-', min_marks:50, max_marks:54,  grade_point:1.7 },
+    { grade:'D',  min_marks:45, max_marks:49,  grade_point:1.0 },
+    { grade:'F',  min_marks:0,  max_marks:44,  grade_point:0.0 },
+  ];
+
+  async function loadGrading() {
+    try {
+      const { data } = await api('get-grading');
+      _gradingData = data.grades || DEFAULT_GRADING;
+      renderGradingTable();
+      renderGradeChips();
+      const status = document.getElementById('grading-status');
+      if (data.isDefault) {
+        status.textContent = 'Using default grading scale';
+        status.className = 'badge badge-warn';
+      } else {
+        status.textContent = '✓ Custom grading scale active';
+        status.className = 'badge badge-green';
+      }
+    } catch(e) {
+      _gradingData = [...DEFAULT_GRADING];
+      renderGradingTable();
+      renderGradeChips();
+    }
+  }
+
+  function renderGradingTable() {
+    // Recalculate max_marks based on sorted min_marks
+    const sorted = [..._gradingData].sort((a,b) => b.min_marks - a.min_marks);
+    sorted.forEach((g, i) => {
+      g.max_marks = i === 0 ? 100 : sorted[i-1].min_marks - 1;
+    });
+    _gradingData = sorted;
+
+    const tbody = document.getElementById('grading-body');
+    tbody.innerHTML = _gradingData.map((g, i) => {
+      const isPass = g.min_marks >= 50;
+      const gc = g.grade[0]==='A' ? '#d4f5e3' : g.grade[0]==='B' ? '#dceeff' : g.grade[0]==='C' ? '#fff6d4' : g.grade[0]==='D' ? '#ffe8d0' : '#ffe0e0';
+      const tc = g.grade[0]==='A' ? '#006b2d' : g.grade[0]==='B' ? '#0055a5' : g.grade[0]==='C' ? '#856200' : g.grade[0]==='D' ? '#7c3a00' : '#b30000';
+      return `<tr>
+        <td>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;background:${gc};color:${tc};border-radius:10px;font-weight:900;font-size:.9rem">${g.grade}</span>
+        </td>
+        <td>
+          <input type="number" value="${g.min_marks}" min="0" max="100" step="1"
+            style="width:80px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:'Nunito Sans',sans-serif;font-size:.9rem;font-weight:700;text-align:center;outline:none"
+            onchange="updateGradeMin(${i}, this.value)"
+            onfocus="this.style.borderColor='var(--g-mid)'"
+            onblur="this.style.borderColor='var(--border)'"/>
+        </td>
+        <td style="color:var(--tl);font-weight:600" id="gmax-${i}">${g.max_marks}</td>
+        <td>
+          <input type="number" value="${g.grade_point}" min="0" max="4" step="0.1"
+            style="width:70px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:'Nunito Sans',sans-serif;font-size:.9rem;font-weight:700;text-align:center;outline:none"
+            onchange="updateGradePoint(${i}, this.value)"
+            onfocus="this.style.borderColor='var(--g-mid)'"
+            onblur="this.style.borderColor='var(--border)'"/>
+        </td>
+        <td>
+          <span class="badge ${isPass?'badge-green':'badge-red'}">${isPass?'Pass':'Fail'}</span>
+        </td>
+      </tr>`;
+    }).join('');
+
+    renderGradeChips();
+  }
+
+  function updateGradeMin(idx, val) {
+    _gradingData[idx].min_marks = parseFloat(val) || 0;
+    // Recalculate all max marks
+    const sorted = [..._gradingData].sort((a,b) => b.min_marks - a.min_marks);
+    sorted.forEach((g, i) => {
+      g.max_marks = i === 0 ? 100 : sorted[i-1].min_marks - 1;
+    });
+    _gradingData = sorted;
+    renderGradingTable();
+    renderGradeChips();
+  }
+
+  function updateGradePoint(idx, val) {
+    _gradingData[idx].grade_point = parseFloat(val) || 0;
+  }
+
+  function resetGradingDefaults() {
+    _gradingData = JSON.parse(JSON.stringify(DEFAULT_GRADING));
+    renderGradingTable();
+    renderGradeChips();
+    toast('Reset to default grading scale. Click Save to apply.');
+  }
+
+  async function saveGrading() {
+    const btn = document.getElementById('grading-save-btn');
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving…';
+    try {
+      const res  = await fetch('/.netlify/functions/save-grading', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify({ grades: _gradingData }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast('Grading system saved! All future results will use this scale.');
+        const status = document.getElementById('grading-status');
+        status.textContent = '✓ Custom grading scale active';
+        status.className = 'badge badge-green';
+      } else {
+        toast(data.message || 'Failed to save.', true);
+      }
+    } catch(e) { toast('Error saving grading system.', true); }
+    finally {
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Grading System';
+    }
+  }
+
+  function renderGradeChips() {
+    const chips = document.getElementById('grade-chips');
+    if (!chips) return;
+    chips.innerHTML = _gradingData.map(g => {
+      const gc = g.grade[0]==='A'?'#d4f5e3':g.grade[0]==='B'?'#dceeff':g.grade[0]==='C'?'#fff6d4':g.grade[0]==='D'?'#ffe8d0':'#ffe0e0';
+      const tc = g.grade[0]==='A'?'#006b2d':g.grade[0]==='B'?'#0055a5':g.grade[0]==='C'?'#856200':g.grade[0]==='D'?'#7c3a00':'#b30000';
+      return `<div style="background:${gc};color:${tc};border-radius:10px;padding:8px 14px;font-weight:700;font-size:.82rem;text-align:center;min-width:70px">
+        <div style="font-size:1rem;font-weight:900">${g.grade}</div>
+        <div style="font-size:.7rem;opacity:.8">${g.min_marks}–${g.max_marks}</div>
+        <div style="font-size:.7rem;opacity:.7">GP: ${g.grade_point}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function previewGrade(val) {
+    const m = parseFloat(val);
+    const el = document.getElementById('grade-preview-result');
+    if (isNaN(m) || val === '') { el.innerHTML = ''; return; }
+    const sorted = [..._gradingData].sort((a,b) => b.min_marks - a.min_marks);
+    let grade = 'F', gp = '0.0';
+    for (const g of sorted) {
+      if (m >= g.min_marks) { grade = g.grade; gp = g.grade_point; break; }
+    }
+    const gc = grade[0]==='A'?'#006b2d':grade[0]==='B'?'#0055a5':grade[0]==='C'?'#856200':grade[0]==='D'?'#7c3a00':'#b30000';
+    const bg = grade[0]==='A'?'#d4f5e3':grade[0]==='B'?'#dceeff':grade[0]==='C'?'#fff6d4':grade[0]==='D'?'#ffe8d0':'#ffe0e0';
+    el.innerHTML = `<span style="background:${bg};color:${gc};padding:6px 16px;border-radius:10px;font-size:1.1rem;font-weight:900">${grade}</span>
+      <span style="color:var(--tl);font-size:.82rem;font-weight:600;margin-left:8px">GP: ${gp} · ${m>=50?'Pass':'Fail'}</span>`;
+  }
+
+  /* ══════════════════════════════════════
+     BULK RESULTS
+  ══════════════════════════════════════ */
+  let _bulkRows = [];
+
+  function gradeFromMarks(m) {
+    if (m>=90) return 'A+'; if (m>=85) return 'A'; if (m>=80) return 'A-';
+    if (m>=75) return 'B+'; if (m>=70) return 'B'; if (m>=65) return 'B-';
+    if (m>=60) return 'C+'; if (m>=55) return 'C'; if (m>=50) return 'C-';
+    if (m>=45) return 'D'; return 'F';
+  }
+
+  function brLoadDepts() {
+    const depts = DEPTS[document.getElementById('br-fac').value] || [];
+    document.getElementById('br-dept').innerHTML = '<option value="">Select Department</option>' + depts.map(d=>'<option>'+d+'</option>').join('');
+  }
+
+  async function downloadTemplate() {
+    const fac     = document.getElementById('br-fac').value;
+    const dept    = document.getElementById('br-dept').value;
+    const year    = document.getElementById('br-year').value;
+    const sem     = document.getElementById('br-sem').value;
+    const subject = document.getElementById('br-subject').value.trim();
+
+    if (!fac||!dept||!year||!sem||!subject) { toast('Please fill in all fields in Step 1 first.', true); return; }
+
+    // Fetch students for this dept+year
+    if (!_students.length) {
+      const { data } = await api('get-all-students');
+      _students = data.students || [];
+    }
+
+    const classStudents = _students.filter(s => s.department===dept && String(s.year)===String(year));
+    if (!classStudents.length) { toast('No students found for this department and year.', true); return; }
+
+    // Build Excel using SheetJS
+    const wb   = XLSX.utils.book_new();
+    const rows = [
+      ['GIU Al-Hikma University – Result Entry Sheet'],
+      [`Subject: ${subject}  |  Department: ${dept}  |  Year: ${year}  |  Semester: ${sem}`],
+      [],
+      ['#', 'Student ID', 'Full Name', 'Marks (0-100)', 'Notes'],
+    ];
+
+    classStudents.forEach((s, i) => {
+      rows.push([i+1, s.student_id, s.full_name, '', '']);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+
+    // Column widths
+    ws['!cols'] = [
+      { wch: 4 }, { wch: 16 }, { wch: 30 }, { wch: 14 }, { wch: 20 }
+    ];
+
+    // Merge title row
+    ws['!merges'] = [{ s:{r:0,c:0}, e:{r:0,c:4} }, { s:{r:1,c:0}, e:{r:1,c:4} }];
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Results');
+
+    const filename = `${dept.replace('Department of ','')}_Year${year}_Sem${sem}_${subject.replace(/\s+/g,'_')}.xlsx`;
+    XLSX.writeFile(wb, filename);
+
+    document.getElementById('br-template-info').textContent = `✓ Downloaded — ${classStudents.length} students`;
+    toast(`Template downloaded for ${classStudents.length} students!`);
+  }
+
+  function previewExcel(input) {
+    const file = input.files[0];
+    if (!file) return;
+    document.getElementById('br-file-name').textContent = file.name;
+
+    const subject = document.getElementById('br-subject').value.trim();
+    const year    = parseInt(document.getElementById('br-year').value);
+    const sem     = parseInt(document.getElementById('br-sem').value);
+    const credits = parseInt(document.getElementById('br-credits').value) || 3;
+
+    if (!subject||!year||!sem) { toast('Please fill Step 1 fields before uploading.', true); return; }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const wb   = XLSX.read(e.target.result, { type:'array' });
+        const ws   = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, { header:1, defval:'' });
+
+        // Find header row — look for row containing "Student ID"
+        let headerIdx = -1;
+        for (let i=0; i<rows.length; i++) {
+          if (rows[i].some(c => String(c).toLowerCase().includes('student id'))) {
+            headerIdx = i; break;
+          }
+        }
+        if (headerIdx === -1) { toast('Could not find header row. Make sure you use the downloaded template.', true); return; }
+
+        const headers = rows[headerIdx].map(h => String(h).toLowerCase().trim());
+        const sidIdx  = headers.findIndex(h => h.includes('student id'));
+        const nameIdx = headers.findIndex(h => h.includes('full name') || h.includes('name'));
+        const markIdx = headers.findIndex(h => h.includes('marks'));
+
+        _bulkRows = [];
+        const dataRows = rows.slice(headerIdx + 1);
+
+        dataRows.forEach(row => {
+          const sid   = String(row[sidIdx] || '').trim();
+          const name  = String(row[nameIdx] || '').trim();
+          const marks = row[markIdx];
+          if (!sid) return;
+          _bulkRows.push({ student_id:sid, full_name:name, marks, subject_name:subject, year, semester:sem, credit_hours:credits });
+        });
+
+        renderBulkPreview();
+      } catch(err) {
+        toast('Error reading Excel file: ' + err.message, true);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function renderBulkPreview() {
+    const wrap = document.getElementById('br-preview-wrap');
+    const body = document.getElementById('br-preview-body');
+    const badge = document.getElementById('br-count-badge');
+    const submit = document.getElementById('br-submit-wrap');
+    const resultBox = document.getElementById('br-result-box');
+
+    resultBox.style.display = 'none';
+
+    if (!_bulkRows.length) { wrap.style.display='none'; submit.style.display='none'; return; }
+
+    let valid=0, invalid=0;
+    body.innerHTML = _bulkRows.map((r, i) => {
+      const m = parseFloat(r.marks);
+      const hasMarks = !isNaN(m) && r.marks !== '' && r.marks !== null;
+      const validRow = hasMarks && m>=0 && m<=100;
+      if (validRow) valid++; else invalid++;
+      const grade  = validRow ? gradeFromMarks(m) : '—';
+      const gc     = validRow ? (m>=50?'badge-green':'badge-red') : 'badge-gray';
+      const status = validRow ? (m>=50?'✓ Pass':'✗ Fail') : '⚠ No marks';
+      const rowBg  = !validRow ? 'background:#fffbeb' : '';
+      return `<tr style="${rowBg}">
+        <td style="color:var(--tl);font-size:.8rem">${i+1}</td>
+        <td><code style="background:var(--g-pale);padding:2px 7px;border-radius:5px;font-size:.78rem;font-weight:700">${r.student_id}</code></td>
+        <td style="font-weight:700">${r.full_name||'—'}</td>
+        <td><strong style="color:${validRow?'var(--td)':'#b45309'}">${hasMarks?m:'Empty'}</strong>${validRow?'/100':''}</td>
+        <td><span class="badge ${gc}">${grade}</span></td>
+        <td style="font-weight:700;font-size:.82rem;color:${validRow?(m>=50?'#006b2d':'#b30000'):'#b45309'}">${status}</td>
+      </tr>`;
+    }).join('');
+
+    badge.textContent = `${valid} valid · ${invalid} skipped`;
+    badge.className   = 'badge ' + (invalid>0?'badge-warn':'badge-green');
+    document.getElementById('br-preview-title').textContent = `Preview — ${_bulkRows.length} rows`;
+    wrap.style.display   = 'block';
+    submit.style.display = valid > 0 ? 'block' : 'none';
+  }
+
+  async function submitBulkResults() {
+    const validRows = _bulkRows.filter(r => {
+      const m = parseFloat(r.marks);
+      return !isNaN(m) && r.marks!=='' && m>=0 && m<=100;
+    });
+
+    if (!validRows.length) { toast('No valid rows to submit.', true); return; }
+
+    const btn = document.getElementById('br-submit-btn');
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Saving '+validRows.length+' results…';
+
+    try {
+      const res  = await fetch('/.netlify/functions/bulk-results', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify({ results: validRows }),
+      });
+      const data = await res.json();
+      const box  = document.getElementById('br-result-box');
+
+      if (data.success) {
+        box.style.display    = 'block';
+        box.style.background = '#d4f5e3';
+        box.style.border     = '1.5px solid #a3e9c2';
+        box.style.color      = '#006b2d';
+        box.innerHTML = `
+          <div style="font-size:1rem;margin-bottom:6px">✅ Results saved successfully!</div>
+          <div style="font-weight:400;font-size:.85rem">
+            <strong>${data.inserted}</strong> results inserted/updated &nbsp;·&nbsp;
+            <strong>${data.skipped}</strong> skipped
+            ${data.errors?.length ? '<br><span style="color:#b45309">Errors: '+data.errors.join(', ')+'</span>' : ''}
+          </div>`;
+        toast(`${data.inserted} results saved!`);
+        _bulkRows = [];
+        document.getElementById('br-preview-wrap').style.display  = 'none';
+        document.getElementById('br-submit-wrap').style.display   = 'none';
+        document.getElementById('br-file').value = '';
+        document.getElementById('br-file-name').textContent = '';
+        document.getElementById('br-template-info').textContent   = '';
+      } else {
+        box.style.display    = 'block';
+        box.style.background = '#fff0f0';
+        box.style.border     = '1px solid #ffcccc';
+        box.style.color      = '#cc0000';
+        box.textContent = data.message || 'Failed to save results.';
+        toast(data.message || 'Failed.', true);
+      }
+    } catch(e) { toast('Error submitting results.', true); }
+    finally {
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Save All Results to Database';
+    }
+  }
 
   /* ══════════════════════════════════════
      LANGUAGE TOGGLE
