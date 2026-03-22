@@ -185,17 +185,25 @@
     /* ── ACTION STRIP ── */
     .action-strip { display: flex; gap: 8px; flex-wrap: wrap; }
 
+    /* ── LANGUAGE TOGGLE ── */
+    .lang-toggle { display: flex; align-items: center; gap: 4px; background: var(--g-pale); border: 1.5px solid var(--border); border-radius: 10px; padding: 4px; }
+    .lang-btn { padding: 5px 12px; border-radius: 7px; border: none; font-family: 'Nunito Sans', sans-serif; font-size: .8rem; font-weight: 700; cursor: pointer; transition: all .18s; background: none; color: var(--tl); }
+    .lang-btn.active { background: var(--g-dark); color: #fff; }
+    .lang-btn:hover:not(.active) { color: var(--g-dark); }
+    [dir="rtl"] .main { direction: rtl; }
+    [dir="rtl"] .sidebar { left: auto; right: 0; }
+    [dir="rtl"] .main { margin-left: 0; margin-right: var(--sidebar); }
+    [dir="rtl"] .sb-item { text-align: right; }
+    [dir="rtl"] .topbar { direction: rtl; }
+    [dir="rtl"] .data-tbl th,
+    [dir="rtl"] .data-tbl td { text-align: right; }
+    [dir="rtl"] .form-group label { text-align: right; }
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); }
       .main    { margin-left: 0; }
       .form-row { grid-template-columns: 1fr; }
       .content  { padding: 16px; }
     }
-  </style>
-</head>
-<body>
-
-<!-- ══ LOGIN ══ -->
 <div id="login-screen">
   <div class="login-box">
     <div class="lb-head">
@@ -294,6 +302,10 @@
       <div class="topbar-left">
         <h3 id="page-title">Dashboard</h3>
         <p  id="page-sub">Overview of Al-Hikma University</p>
+      </div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" id="lang-ar" onclick="setLang('ar')">عربي</button>
       </div>
     </div>
 
@@ -978,6 +990,137 @@
   document.addEventListener('keydown', e => {
     if (e.key==='Enter' && !document.getElementById('login-screen').classList.contains('hidden')) doAdminLogin();
   });
+
+  /* ══════════════════════════════════════
+     LANGUAGE TOGGLE
+  ══════════════════════════════════════ */
+  const TRANSLATIONS = {
+    en: {
+      'page-title-dashboard':   'Dashboard',        'page-sub-dashboard':   'Overview of Al-Hikma University',
+      'page-title-students':    'All Students',      'page-sub-students':    'Manage all enrolled students',
+      'page-title-add-student': 'Add Student',       'page-sub-add-student': 'Enrol a new student',
+      'page-title-departments': 'All Departments',   'page-sub-departments': 'View and manage all 8 departments',
+      'page-title-results':     'All Results',       'page-sub-results':     'View and manage academic results',
+      'page-title-add-result':  'Add Result',        'page-sub-add-result':  'Post or update a student result',
+      'page-title-reset-pw':    'Reset Password',    'page-sub-reset-pw':    'Change a student login password',
+      sb_dashboard: 'Dashboard',    sb_students: 'All Students',   sb_add_student: 'Add Student',
+      sb_depts: 'All Departments',  sb_results: 'All Results',     sb_add_result: 'Add Result',
+      sb_reset: 'Reset Password',   sb_overview: 'OVERVIEW',       sb_students_sec: 'STUDENTS',
+      sb_depts_sec: 'DEPARTMENTS',  sb_results_sec: 'RESULTS',     sb_tools_sec: 'TOOLS',
+      sb_signout: 'Sign Out',       sb_role: 'Super Administrator',
+      stat_students: 'Total Students', stat_results: 'Total Results', stat_faculties: 'Faculties', stat_depts: 'Departments',
+      recent_title: 'Recently Added Students',
+      th_sid: 'Student ID', th_name: 'Full Name', th_email: 'Email', th_faculty: 'Faculty',
+      th_dept: 'Department', th_year: 'Year', th_actions: 'Actions',
+      btn_view_dept: 'View Department', btn_add_student: 'Add Student', btn_save_result: 'Save Result',
+      btn_reset_pw: 'Reset Password', btn_move: 'Move', btn_delete: 'Delete',
+      lbl_student_id: 'Student ID', lbl_full_name: 'Full Name', lbl_email: 'Email Address',
+      lbl_faculty: 'Faculty', lbl_dept: 'Department', lbl_year: 'Year', lbl_password: 'Password',
+      lbl_subject: 'Subject Name', lbl_marks: 'Marks (0–100)', lbl_credits: 'Credit Hours',
+      lbl_semester: 'Semester', lbl_new_pw: 'New Password',
+      login_title: 'Admin Portal', login_sub: 'Al-Hikma University · GIU · Restricted Access',
+      login_username: 'Username', login_password: 'Password', login_btn: 'Sign In',
+    },
+    ar: {
+      'page-title-dashboard':   'لوحة التحكم',       'page-sub-dashboard':   'نظرة عامة على جامعة الحكمة',
+      'page-title-students':    'جميع الطلاب',        'page-sub-students':    'إدارة جميع الطلاب المسجلين',
+      'page-title-add-student': 'إضافة طالب',         'page-sub-add-student': 'تسجيل طالب جديد',
+      'page-title-departments': 'جميع الأقسام',       'page-sub-departments': 'عرض وإدارة الأقسام الثمانية',
+      'page-title-results':     'جميع النتائج',       'page-sub-results':     'عرض وإدارة النتائج الأكاديمية',
+      'page-title-add-result':  'إضافة نتيجة',        'page-sub-add-result':  'إدخال أو تحديث نتيجة طالب',
+      'page-title-reset-pw':    'إعادة تعيين كلمة المرور', 'page-sub-reset-pw': 'تغيير كلمة مرور الطالب',
+      sb_dashboard: 'لوحة التحكم',  sb_students: 'جميع الطلاب',   sb_add_student: 'إضافة طالب',
+      sb_depts: 'جميع الأقسام',     sb_results: 'جميع النتائج',   sb_add_result: 'إضافة نتيجة',
+      sb_reset: 'إعادة تعيين',      sb_overview: 'نظرة عامة',     sb_students_sec: 'الطلاب',
+      sb_depts_sec: 'الأقسام',      sb_results_sec: 'النتائج',    sb_tools_sec: 'الأدوات',
+      sb_signout: 'تسجيل الخروج',   sb_role: 'المدير العام',
+      stat_students: 'إجمالي الطلاب', stat_results: 'إجمالي النتائج', stat_faculties: 'الكليات', stat_depts: 'الأقسام',
+      recent_title: 'الطلاب المضافون مؤخراً',
+      th_sid: 'رقم الطالب', th_name: 'الاسم الكامل', th_email: 'البريد الإلكتروني', th_faculty: 'الكلية',
+      th_dept: 'القسم', th_year: 'السنة', th_actions: 'الإجراءات',
+      btn_view_dept: 'عرض القسم', btn_add_student: 'إضافة طالب', btn_save_result: 'حفظ النتيجة',
+      btn_reset_pw: 'إعادة التعيين', btn_move: 'نقل', btn_delete: 'حذف',
+      lbl_student_id: 'رقم الطالب', lbl_full_name: 'الاسم الكامل', lbl_email: 'البريد الإلكتروني',
+      lbl_faculty: 'الكلية', lbl_dept: 'القسم', lbl_year: 'السنة', lbl_password: 'كلمة المرور',
+      lbl_subject: 'اسم المادة', lbl_marks: 'الدرجات (0–100)', lbl_credits: 'الساعات المعتمدة',
+      lbl_semester: 'الفصل الدراسي', lbl_new_pw: 'كلمة المرور الجديدة',
+      login_title: 'بوابة المدير', login_sub: 'جامعة الحكمة · GIU · دخول مقيد',
+      login_username: 'اسم المستخدم', login_password: 'كلمة المرور', login_btn: 'تسجيل الدخول',
+    }
+  };
+
+  let _currentLang = 'en';
+
+  function setLang(lang) {
+    _currentLang = lang;
+    const t = TRANSLATIONS[lang];
+    const isAr = lang === 'ar';
+
+    /* toggle buttons */
+    document.getElementById('lang-en').classList.toggle('active', !isAr);
+    document.getElementById('lang-ar').classList.toggle('active', isAr);
+
+    /* page direction */
+    document.getElementById('app').setAttribute('dir', isAr ? 'rtl' : 'ltr');
+    document.getElementById('app').style.fontFamily = isAr ? "'Amiri', serif" : "'Nunito Sans', sans-serif";
+
+    /* sidebar sections */
+    document.querySelectorAll('.sb-section').forEach((el, i) => {
+      const keys = ['sb_overview','sb_students_sec','sb_depts_sec','sb_results_sec','sb_tools_sec'];
+      if (keys[i]) el.textContent = t[keys[i]];
+    });
+
+    /* sidebar items */
+    const sbItems = document.querySelectorAll('.sb-item');
+    const sbKeys  = ['sb_dashboard','sb_students','sb_add_student','sb_depts','sb_results','sb_add_result','sb_reset'];
+    sbItems.forEach((el, i) => {
+      if (sbKeys[i]) {
+        const svg = el.querySelector('svg');
+        el.textContent = t[sbKeys[i]];
+        if (svg) el.prepend(svg);
+      }
+    });
+
+    /* admin role */
+    const rl = document.querySelector('.admin-info .rl');
+    if (rl) rl.textContent = t.sb_role;
+
+    /* sign out */
+    const logout = document.querySelector('.btn-logout');
+    if (logout) {
+      const svg = logout.querySelector('svg');
+      logout.textContent = t.sb_signout;
+      if (svg) logout.prepend(svg);
+    }
+
+    /* stat labels */
+    const scLbls = document.querySelectorAll('.sc-lbl');
+    const scKeys = ['stat_students','stat_results','stat_faculties','stat_depts'];
+    scLbls.forEach((el, i) => { if (scKeys[i]) el.textContent = t[scKeys[i]]; });
+
+    /* recent students title */
+    const recentH4 = document.querySelector('#page-dashboard .card-head h4');
+    if (recentH4) recentH4.textContent = t.recent_title;
+
+    /* login screen */
+    const lh2 = document.querySelector('.lb-head h2');
+    const lp  = document.querySelector('.lb-head p');
+    if (lh2) lh2.textContent = t.login_title;
+    if (lp)  lp.textContent  = t.login_sub;
+    const lbls = document.querySelectorAll('.lb-body .fg label');
+    if (lbls[0]) lbls[0].textContent = t.login_username;
+    if (lbls[1]) lbls[1].textContent = t.login_password;
+    const loginBtn = document.getElementById('l-btn');
+    if (loginBtn) loginBtn.textContent = t.login_btn;
+
+    /* current page title & sub */
+    const currentPage = document.querySelector('.page.active');
+    if (currentPage) {
+      const id = currentPage.id.replace('page-','');
+      if (t['page-title-'+id]) document.getElementById('page-title').textContent = t['page-title-'+id];
+      if (t['page-sub-'+id])   document.getElementById('page-sub').textContent   = t['page-sub-'+id];
+    }
+  }
 </script>
 </body>
 </html>
