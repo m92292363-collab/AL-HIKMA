@@ -1,6 +1,5 @@
 import { neon } from '@neondatabase/serverless';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -9,18 +8,9 @@ const CORS = {
   'Content-Type': 'application/json',
 };
 
-function verifyAdmin(event) {
-  const auth = event.headers['authorization'] || event.headers['Authorization'] || '';
-  const token = auth.replace('Bearer ', '');
-  if (!token) throw new Error('Unauthorized');
-  return jwt.verify(token, process.env.JWT_SECRET);
-}
-
 export const handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
   if (event.httpMethod !== 'POST') return { statusCode: 405, headers: CORS, body: JSON.stringify({ success: false, message: 'Method not allowed' }) };
-
-  try { verifyAdmin(event); } catch { return { statusCode: 401, headers: CORS, body: JSON.stringify({ success: false, message: 'Unauthorized' }) }; }
 
   let student_id, email, full_name, faculty, department, year, password;
   try {
@@ -33,7 +23,7 @@ export const handler = async (event) => {
     return { statusCode: 400, headers: CORS, body: JSON.stringify({ success: false, message: 'All fields are required' }) };
 
   try {
-    const sql = neon(process.env.DATABASE_URL);
+    const sql      = neon(process.env.DATABASE_URL);
     const existing = await sql`SELECT id FROM students WHERE student_id = ${student_id} OR email = ${email}`;
     if (existing.length) return { statusCode: 409, headers: CORS, body: JSON.stringify({ success: false, message: 'Student ID or email already exists' }) };
 
@@ -43,7 +33,6 @@ export const handler = async (event) => {
 
     return { statusCode: 201, headers: CORS, body: JSON.stringify({ success: true, message: 'Student added successfully' }) };
   } catch (e) {
-    console.error('[add-student]', e.message);
-    return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Server error' }) };
+    return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Server error: ' + e.message }) };
   }
 };
