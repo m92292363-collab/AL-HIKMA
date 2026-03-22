@@ -1,5 +1,4 @@
 import { neon } from '@neondatabase/serverless';
-import jwt from 'jsonwebtoken';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -8,41 +7,23 @@ const CORS = {
   'Content-Type': 'application/json',
 };
 
-function verifyDept(event) {
-  const auth  = event.headers['authorization'] || event.headers['Authorization'] || '';
-  const token = auth.replace('Bearer ', '');
-  if (!token) throw new Error('Unauthorized');
-  return jwt.verify(token, process.env.JWT_SECRET);
-}
-
 export const handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
 
-  let decoded;
-  try { decoded = verifyDept(event); }
-  catch { return { statusCode: 401, headers: CORS, body: JSON.stringify({ success: false, message: 'Unauthorized' }) }; }
+  // Get department from query param
+  const department = event.queryStringParameters?.department || '';
+  if (!department) return { statusCode: 400, headers: CORS, body: JSON.stringify({ success: false, message: 'Department required' }) };
 
   try {
     const sql      = neon(process.env.DATABASE_URL);
     const students = await sql`
       SELECT student_id, email, full_name, faculty, department, year, created_at
       FROM students
-      WHERE department = ${decoded.department}
+      WHERE department = ${department}
       ORDER BY year ASC, full_name ASC
     `;
-
-    return {
-      statusCode: 200,
-      headers: CORS,
-      body: JSON.stringify({
-        success:    true,
-        students,
-        department: decoded.department,
-        faculty:    decoded.faculty,
-      }),
-    };
+    return { statusCode: 200, headers: CORS, body: JSON.stringify({ success: true, students }) };
   } catch (e) {
-    console.error('[dept-get-students]', e.message);
-    return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Server error' }) };
+    return { statusCode: 500, headers: CORS, body: JSON.stringify({ success: false, message: 'Server error: ' + e.message }) };
   }
 };
